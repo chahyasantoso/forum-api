@@ -1,7 +1,8 @@
-class UserRepository {
-  async add(registerUser) {
-    throw new Error('USER_REPOSITORY.METHOD_NOT_IMPLEMENTED');
+/* eslint-disable no-unused-vars, class-methods-use-this */
+class ThreadRepository {
+  async add(addThread) {
+    throw new Error('THREAD_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
 }
 
-module.exports = UserRepository;
+module.exports = ThreadRepository;

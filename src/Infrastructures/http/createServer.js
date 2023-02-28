@@ -6,6 +6,7 @@ const DomainErrorTranslator = require('../../Commons/exceptions/DomainErrorTrans
 
 const users = require('../../Interfaces/http/api/users');
 const authentications = require('../../Interfaces/http/api/authentications');
+const threads = require('../../Interfaces/http/api/threads');
 
 const createServer = async (container) => {
   const server = Hapi.server({
@@ -30,7 +31,8 @@ const createServer = async (container) => {
     validate: (artifacts) => ({
       isValid: true,
       credentials: {
-        userId: artifacts.decoded.payload.userId,
+        id: artifacts.decoded.payload.id,
+        username: artifacts.decoded.payload.username,
       },
     }),
   });
@@ -43,6 +45,10 @@ const createServer = async (container) => {
     },
     {
       plugin: authentications,
+      options: { container },
+    },
+    {
+      plugin: threads,
       options: { container },
     },
   ]);
