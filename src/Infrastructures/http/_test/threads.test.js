@@ -14,9 +14,9 @@ describe('/threads endpoint', () => {
       method: 'POST',
       url: '/users',
       payload: {
-        username: 'dicoding',
-        password: 'secret',
-        fullname: 'Dicoding Indonesia',
+        username: 'myname',
+        password: 'xxx',
+        fullname: 'my full name',
       },
     });
 
@@ -25,8 +25,8 @@ describe('/threads endpoint', () => {
       method: 'POST',
       url: '/authentications',
       payload: {
-        username: 'dicoding',
-        password: 'secret',
+        username: 'myname',
+        password: 'xxx',
       },
     });
 
