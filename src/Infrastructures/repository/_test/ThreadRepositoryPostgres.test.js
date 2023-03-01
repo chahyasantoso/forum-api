@@ -1,9 +1,11 @@
+const pool = require('../../database/postgres/pool');
 const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const ThreadsTableTestHelper = require('../../../../tests/ThreadsTableTestHelper');
-const AddThread = require('../../../Domains/threads/entities/AddThread');
+
+const NewThread = require('../../../Domains/threads/entities/NewThread');
 const AddedThread = require('../../../Domains/threads/entities/AddedThread');
-const pool = require('../../database/postgres/pool');
 const ThreadRepositoryPostgres = require('../ThreadRepositoryPostgres');
+const NotFoundError = require('../../../Commons/exceptions/NotFoundError');
 
 describe('ThreadRepositoryPostgres', () => {
   afterEach(async () => {
@@ -16,10 +18,13 @@ describe('ThreadRepositoryPostgres', () => {
   });
 
   describe('add function', () => {
-    it('should persist add thread and return added thread correctly', async () => {
-      // Arrange
+    beforeEach(async () => {
       await UsersTableTestHelper.addUser({ id: 'user-123' });
-      const addThread = new AddThread({
+    });
+
+    it('should persist new thread and return added thread correctly', async () => {
+      // Arrange
+      const newThread = new NewThread({
         title: 'a title',
         body: 'a body',
         owner: 'user-123',
@@ -28,7 +33,7 @@ describe('ThreadRepositoryPostgres', () => {
       const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, fakeIdGenerator);
 
       // Action
-      await threadRepositoryPostgres.add(addThread);
+      await threadRepositoryPostgres.add(newThread);
 
       // Assert
       const row = await ThreadsTableTestHelper.findThreadById('thread-123');
@@ -37,8 +42,7 @@ describe('ThreadRepositoryPostgres', () => {
 
     it('should return added thread correctly', async () => {
       // Arrange
-      await UsersTableTestHelper.addUser({ id: 'user-123' });
-      const addThread = new AddThread({
+      const newThread = new NewThread({
         title: 'a title',
         body: 'a body',
         owner: 'user-123',
@@ -47,7 +51,7 @@ describe('ThreadRepositoryPostgres', () => {
       const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, fakeIdGenerator);
 
       // Action
-      const addedThread = await threadRepositoryPostgres.add(addThread);
+      const addedThread = await threadRepositoryPostgres.add(newThread);
 
       // Assert
       expect(addedThread).toStrictEqual(new AddedThread({
@@ -55,6 +59,18 @@ describe('ThreadRepositoryPostgres', () => {
         title: 'a title',
         owner: 'user-123',
       }));
+    });
+  });
+
+  describe('verifyThreadExist function', () => {
+    it('should throw error when thread not exist', async () => {
+      // Arrange
+      const threadId = 'thread-123';
+      const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, () => {});
+
+      // Action & Assert
+      expect(() => threadRepositoryPostgres.verifyThreadExist(threadId))
+        .rejects.toThrow(NotFoundError);
     });
   });
 });

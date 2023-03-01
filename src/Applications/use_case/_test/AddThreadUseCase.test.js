@@ -1,4 +1,4 @@
-const AddThread = require('../../../Domains/threads/entities/AddThread');
+const NewThread = require('../../../Domains/threads/entities/NewThread');
 const AddedThread = require('../../../Domains/threads/entities/AddedThread');
 const ThreadRepository = require('../../../Domains/threads/ThreadRepository');
 const AddThreadUseCase = require('../AddThreadUseCase');
@@ -9,11 +9,11 @@ describe('AddThreadUseCase', () => {
     const useCasePayload = {
       title: 'a title',
       body: 'a body',
-      owner: 'user1',
+      owner: 'user-123',
     };
 
     const mockAddedThread = new AddedThread({
-      id: 'thread1',
+      id: 'thread-123',
       title: useCasePayload.title,
       owner: useCasePayload.owner,
     });
@@ -26,20 +26,17 @@ describe('AddThreadUseCase', () => {
       .mockImplementation(() => Promise.resolve(mockAddedThread));
 
     /** creating use case instance */
-    const addThreadUseCase = new AddThreadUseCase({
-      threadRepository: mockThreadRepository,
-    });
+    const addThreadUseCase = new AddThreadUseCase({ threadRepository: mockThreadRepository });
 
     // Action
     const addedThread = await addThreadUseCase.execute(useCasePayload);
 
     // Assert
     expect(addedThread).toStrictEqual(new AddedThread({
-      id: 'thread1',
+      id: 'thread-123',
       title: useCasePayload.title,
       owner: useCasePayload.owner,
     }));
-
-    expect(mockThreadRepository.add).toBeCalledWith(new AddThread(useCasePayload));
+    expect(mockThreadRepository.add).toBeCalledWith(new NewThread(useCasePayload));
   });
 });
