@@ -1,36 +1,28 @@
 const pool = require('../../database/postgres/pool');
 const ThreadsTableTestHelper = require('../../../../tests/ThreadsTableTestHelper');
 const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
+const ServerTestHelper = require('../../../../tests/ServerTestHelper');
 const container = require('../../container');
 const createServer = require('../createServer');
 
+const testData = {
+  user: { },
+  token: { },
+  thread: { },
+};
+
 describe('/threads endpoint', () => {
-  const login = {};
-
   beforeAll(async () => {
-    const server = await createServer(container);
-    // add user
-    await server.inject({
-      method: 'POST',
-      url: '/users',
-      payload: {
-        username: 'myname',
-        password: 'xxx',
-        fullname: 'my full name',
-      },
+    testData.user = await ServerTestHelper.addUser({
+      username: 'userA',
+      password: 'xxx',
+      fullname: 'user A full name',
     });
 
-    // login
-    const response = await server.inject({
-      method: 'POST',
-      url: '/authentications',
-      payload: {
-        username: 'myname',
-        password: 'xxx',
-      },
+    testData.token = await ServerTestHelper.login({
+      username: 'userA',
+      password: 'xxx',
     });
-
-    login.data = JSON.parse(response.payload).data;
   });
 
   afterAll(async () => {
@@ -79,7 +71,7 @@ describe('/threads endpoint', () => {
         url: '/threads',
         payload: requestPayload,
         headers: {
-          Authorization: `Bearer ${login.data.accessToken}`,
+          Authorization: `Bearer ${testData.token.accessToken}`,
         },
       });
 
@@ -105,7 +97,7 @@ describe('/threads endpoint', () => {
         url: '/threads',
         payload: requestPayload,
         headers: {
-          Authorization: `Bearer ${login.data.accessToken}`,
+          Authorization: `Bearer ${testData.token.accessToken}`,
         },
       });
 
@@ -131,7 +123,7 @@ describe('/threads endpoint', () => {
         url: '/threads',
         payload: requestPayload,
         headers: {
-          Authorization: `Bearer ${login.data.accessToken}`,
+          Authorization: `Bearer ${testData.token.accessToken}`,
         },
       });
 
@@ -157,7 +149,7 @@ describe('/threads endpoint', () => {
         url: '/threads',
         payload: requestPayload,
         headers: {
-          Authorization: `Bearer ${login.data.accessToken}`,
+          Authorization: `Bearer ${testData.token.accessToken}`,
         },
       });
 
@@ -166,6 +158,36 @@ describe('/threads endpoint', () => {
       expect(response.statusCode).toEqual(201);
       expect(responseJson.status).toEqual('success');
       expect(responseJson.data.addedThread).toBeDefined();
+    });
+  });
+
+  describe('when GET /threads/{threadId}', () => {
+    it('should response 200 and returns thread detail', async () => {
+      // Arrange
+      const threadPayload = {
+        title: 'a thread title',
+        body: 'a thread body',
+      };
+      testData.thread = await ServerTestHelper.addThread(threadPayload, testData.token.accessToken);
+      const server = await createServer(container);
+
+      // Action
+      const response = await server.inject({
+        method: 'GET',
+        url: `/threads/${testData.thread.id}`,
+      });
+
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(200);
+      expect(responseJson.status).toEqual('success');
+      expect(responseJson.data.thread).toBeDefined();
+      expect(responseJson.data.thread.id).not.toEqual('');
+      expect(responseJson.data.thread.title).toEqual(threadPayload.title);
+      expect(responseJson.data.thread.body).toEqual(threadPayload.body);
+      expect(responseJson.data.thread.date).not.toEqual('');
+      expect(responseJson.data.thread.username).toEqual(testData.user.username);
+      expect(responseJson.data.thread.comments).toEqual([]);
     });
   });
 });

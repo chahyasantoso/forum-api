@@ -25,12 +25,12 @@ class ThreadRepositoryPostgres extends ThreadRepository {
     return new AddedThread({ ...result.rows[0] });
   }
 
-  async verifyThreadExist(id) {
+  async verifyThreadExist(threadId) {
     const query = {
       text: `SELECT id
       FROM threads
       WHERE id = $1`,
-      values: [id],
+      values: [threadId],
     };
     const result = await this._pool.query(query);
 
@@ -39,13 +39,13 @@ class ThreadRepositoryPostgres extends ThreadRepository {
     }
   }
 
-  async getThreadById(id) {
+  async getThreadById(threadId) {
     const query = {
       text: `SELECT threads.id, threads.title, threads.body, threads.date, users.username 
       FROM threads
       LEFT JOIN users ON threads.owner = users.id
       WHERE threads.id = $1`,
-      values: [id],
+      values: [threadId],
     };
     const result = await this._pool.query(query);
 

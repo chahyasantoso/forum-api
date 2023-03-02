@@ -43,9 +43,10 @@ class CommentRepositoryPostgres extends CommentRepository {
     }
   }
 
+  /*
   async getCommentById(commentId, threadId) {
-    const query = {
-      text: `SELECT comments.id, comments.content, comments.date, users.username 
+     const query = {
+      text: `SELECT comments.id, comments.content, comments.date, users.username
       FROM comments
       LEFT JOIN users ON comments.owner = users.id
       WHERE comments.id = $1 AND comments.thread_id = $2`,
@@ -58,6 +59,7 @@ class CommentRepositoryPostgres extends CommentRepository {
     }
     return new Comment({ ...result.rows[0] });
   }
+  */
 
   async verifyOwner(commentId, threadId, owner) {
     const query = {
@@ -74,6 +76,24 @@ class CommentRepositoryPostgres extends CommentRepository {
     if (owner !== result.rows[0].owner) {
       throw new AuthorizationError('Anda tidak berhak mengakses resource ini');
     }
+  }
+
+  /* eslint-disable camelcase */
+  async getCommentsByThreadId(threadId) {
+    const query = {
+      text: `SELECT comments.id, comments.content, comments.date, users.username, comments.is_delete 
+      FROM comments
+      LEFT JOIN users ON comments.owner = users.id
+      WHERE comments.thread_id = $1`,
+      values: [threadId],
+    };
+    const result = await this._pool.query(query);
+
+    return result.rows.map(({
+      id, content, date, username, is_delete,
+    }) => new Comment({
+      id, content, date, username, isDelete: is_delete,
+    }));
   }
 }
 
