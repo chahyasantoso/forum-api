@@ -10,10 +10,13 @@ class ThreadsHandler {
   }
 
   async postThreadHandler(request, h) {
-    const { id } = request.auth.credentials;
-
     const addThreadUseCase = this._container.getInstance(AddThreadUseCase.name);
-    const addedThread = await addThreadUseCase.execute({ ...request.payload, owner: id });
+    // kirim semua data yang diperlukan oleh use case
+    const useCasePayload = {
+      ...request.payload,
+      owner: request.auth.credentials.id,
+    };
+    const addedThread = await addThreadUseCase.execute(useCasePayload);
 
     const response = h.response({
       status: 'success',
@@ -26,10 +29,11 @@ class ThreadsHandler {
   }
 
   async getThreadHandler(request, h) {
-    const { threadId } = request.params;
-
     const getThreadUseCase = this._container.getInstance(GetThreadUseCase.name);
-    const thread = await getThreadUseCase.execute({ threadId });
+    const useCasePayload = {
+      ...request.params,
+    };
+    const thread = await getThreadUseCase.execute(useCasePayload);
 
     const response = h.response({
       status: 'success',

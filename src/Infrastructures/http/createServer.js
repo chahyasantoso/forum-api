@@ -76,10 +76,11 @@ const createServer = async (container) => {
 
       // server Error
       if (translatedError.isServer) {
-        /* console.error(translatedError); */
+        // console.error(translatedError);
         const newResponse = h.response({
           status: 'error',
           message: 'terjadi kegagalan pada server kami',
+          // detail: translatedError.stack,
         });
         newResponse.code(500);
         return newResponse;

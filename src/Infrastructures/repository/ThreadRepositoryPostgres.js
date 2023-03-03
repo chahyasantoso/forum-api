@@ -16,18 +16,19 @@ class ThreadRepositoryPostgres extends ThreadRepository {
     const date = new Date().toISOString();
 
     const query = {
-      text: 'INSERT INTO threads VALUES($1, $2, $3, $4, $5) RETURNING id, title, owner',
+      text: `INSERT INTO threads 
+      VALUES($1, $2, $3, $4, $5) 
+      RETURNING id, title, owner`,
       values: [id, title, body, date, owner],
     };
 
     const result = await this._pool.query(query);
-
     return new AddedThread({ ...result.rows[0] });
   }
 
-  async verifyThreadExist(threadId) {
+  async verifyExisting(threadId) {
     const query = {
-      text: `SELECT id
+      text: `SELECT 1
       FROM threads
       WHERE id = $1`,
       values: [threadId],

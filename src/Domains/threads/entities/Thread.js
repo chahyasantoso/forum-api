@@ -1,7 +1,6 @@
 class Thread {
   constructor(payload) {
     this._verifyPayload(payload);
-
     const {
       id, title, body, date, username,
     } = payload;
