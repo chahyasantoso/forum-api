@@ -17,11 +17,13 @@ DomainErrorTranslator._directories = {
   'REFRESH_AUTHENTICATION_USE_CASE.PAYLOAD_NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('refresh token harus string'),
   'DELETE_AUTHENTICATION_USE_CASE.NOT_CONTAIN_REFRESH_TOKEN': new InvariantError('harus mengirimkan token refresh'),
   'DELETE_AUTHENTICATION_USE_CASE.PAYLOAD_NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('refresh token harus string'),
-  'NEW_THREAD.NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError('gagal membuat thread, properti yang dibutuhkan tidak ada'),
-  'NEW_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('gagal membuat thread, tipe data tidak sesuai'),
-  'NEW_THREAD.TITLE_LIMIT_CHAR': new InvariantError('gagal membuat thread, karakter judul melebihi batas limit'),
-  'NEW_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError('gagal membuat comment, properti yang dibutuhkan tidak ada'),
-  'NEW_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('gagal membuat comment, tipe data tidak sesuai'),
+  'ADD_THREAD.NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError('gagal membuat thread, properti yang dibutuhkan tidak ada'),
+  'ADD_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('gagal membuat thread, tipe data tidak sesuai'),
+  'ADD_THREAD.TITLE_LIMIT_CHAR': new InvariantError('gagal membuat thread, karakter judul melebihi batas limit'),
+  'ADD_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError('gagal membuat comment, properti yang dibutuhkan tidak ada'),
+  'ADD_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('gagal membuat comment, tipe data tidak sesuai'),
+  'ADD_REPLY.NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError('gagal membuat reply comment, properti yang dibutuhkan tidak ada'),
+  'ADD_REPLY.NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('gagal membuat reply comment, tipe data tidak sesuai'),
 };
 
 module.exports = DomainErrorTranslator;

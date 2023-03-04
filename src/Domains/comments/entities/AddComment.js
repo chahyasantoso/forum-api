@@ -1,5 +1,5 @@
 /* eslint-disable class-methods-use-this */
-class NewComment {
+class AddComment {
   constructor(payload) {
     this._verifyPayload(payload);
     const { threadId, content, owner } = payload;
@@ -11,15 +11,15 @@ class NewComment {
 
   _verifyPayload({ threadId, content, owner }) {
     if (!threadId || !content || !owner) {
-      throw new Error('NEW_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY');
+      throw new Error('ADD_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY');
     }
 
     if (typeof threadId !== 'string'
     || typeof content !== 'string'
     || typeof owner !== 'string') {
-      throw new Error('NEW_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION');
+      throw new Error('ADD_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION');
     }
   }
 }
 
-module.exports = NewComment;
+module.exports = AddComment;

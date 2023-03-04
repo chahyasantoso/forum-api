@@ -1,5 +1,5 @@
 /* eslint-disable class-methods-use-this */
-class Comment {
+class CommentDetail {
   constructor(payload) {
     this._verifyPayload(payload);
 
@@ -16,10 +16,7 @@ class Comment {
   _verifyPayload({
     id, username, date, content, isDelete,
   }) {
-    if (typeof id === 'undefined'
-    || typeof username === 'undefined'
-    || typeof date === 'undefined'
-    || typeof content === 'undefined'
+    if (!id || !username || !date || !content
     || typeof isDelete === 'undefined') {
       throw new Error('COMMENT.NOT_CONTAIN_NEEDED_PROPERTY');
     }
@@ -34,4 +31,4 @@ class Comment {
   }
 }
 
-module.exports = Comment;
+module.exports = CommentDetail;

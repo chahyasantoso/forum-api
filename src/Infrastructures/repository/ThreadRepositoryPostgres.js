@@ -1,5 +1,5 @@
 const AddedThread = require('../../Domains/threads/entities/AddedThread');
-const Thread = require('../../Domains/threads/entities/Thread');
+const ThreadDetail = require('../../Domains/threads/entities/ThreadDetail');
 const ThreadRepository = require('../../Domains/threads/ThreadRepository');
 const NotFoundError = require('../../Commons/exceptions/NotFoundError');
 
@@ -10,8 +10,8 @@ class ThreadRepositoryPostgres extends ThreadRepository {
     this._idGenerator = idGenerator;
   }
 
-  async add(newThread) {
-    const { title, body, owner } = newThread;
+  async add(addThread) {
+    const { title, body, owner } = addThread;
     const id = `thread-${this._idGenerator()}`;
     const date = new Date().toISOString();
 
@@ -53,7 +53,7 @@ class ThreadRepositoryPostgres extends ThreadRepository {
     if (result.rows.length === 0) {
       throw new NotFoundError('Thread tidak ditemukan');
     }
-    return new Thread({ ...result.rows[0] });
+    return new ThreadDetail({ ...result.rows[0] });
   }
 }
 

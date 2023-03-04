@@ -1,4 +1,4 @@
-class Thread {
+class ThreadDetail {
   constructor(payload) {
     this._verifyPayload(payload);
     const {
@@ -17,7 +17,7 @@ class Thread {
     id, title, body, date, username,
   }) {
     if (!id || !title || !body || !date || !username) {
-      throw new Error('THREAD.NOT_CONTAIN_NEEDED_PROPERTY');
+      throw new Error('THREAD_DETAIL.NOT_CONTAIN_NEEDED_PROPERTY');
     }
 
     if (typeof id !== 'string'
@@ -25,13 +25,13 @@ class Thread {
         || typeof body !== 'string'
         || typeof date !== 'string'
         || typeof username !== 'string') {
-      throw new Error('THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION');
+      throw new Error('THREAD_DETAIL.NOT_MEET_DATA_TYPE_SPECIFICATION');
     }
 
     if (title.length > 100) {
-      throw new Error('THREAD.TITLE_LIMIT_CHAR');
+      throw new Error('THREAD_DETAIL.TITLE_LIMIT_CHAR');
     }
   }
 }
 
-module.exports = Thread;
+module.exports = ThreadDetail;
