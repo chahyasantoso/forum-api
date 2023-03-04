@@ -19,6 +19,7 @@ class RefreshAuthenticationUseCase {
     return this._authenticationTokenManager.createAccessToken({ username, id });
   }
 
+  /* eslint-disable class-methods-use-this */
   _verifyPayload(payload) {
     const { refreshToken } = payload;
 

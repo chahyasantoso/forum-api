@@ -6,6 +6,7 @@ class UserLogin {
     this.password = payload.password;
   }
 
+  /* eslint-disable class-methods-use-this */
   _verifyPayload(payload) {
     const { username, password } = payload;
 
