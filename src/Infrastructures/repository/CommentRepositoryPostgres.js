@@ -72,7 +72,7 @@ class CommentRepositoryPostgres extends CommentRepository {
   }
 
   /* eslint-disable camelcase */
-  async getCommentsByThreadId(threadId) {
+  async getComments(threadId) {
     const query = {
       text: `SELECT comments.id, comments.content, comments.date, users.username, comments.is_delete 
       FROM comments

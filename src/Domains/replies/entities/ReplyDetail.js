@@ -16,10 +16,7 @@ class ReplyDetail {
   _verifyPayload({
     id, username, date, content, isDelete,
   }) {
-    if (typeof id === 'undefined'
-    || typeof username === 'undefined'
-    || typeof date === 'undefined'
-    || typeof content === 'undefined'
+    if (!id || !username || !date || !content
     || typeof isDelete === 'undefined') {
       throw new Error('REPLY_DETAIL.NOT_CONTAIN_NEEDED_PROPERTY');
     }

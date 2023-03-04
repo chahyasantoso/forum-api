@@ -18,7 +18,7 @@ class CommentDetail {
   }) {
     if (!id || !username || !date || !content
     || typeof isDelete === 'undefined') {
-      throw new Error('COMMENT.NOT_CONTAIN_NEEDED_PROPERTY');
+      throw new Error('COMMENT_DETAIL.NOT_CONTAIN_NEEDED_PROPERTY');
     }
 
     if (typeof id !== 'string'
@@ -26,7 +26,7 @@ class CommentDetail {
     || typeof date !== 'string'
     || typeof content !== 'string'
     || typeof isDelete !== 'boolean') {
-      throw new Error('COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION');
+      throw new Error('COMMENT_DETAIL.NOT_MEET_DATA_TYPE_SPECIFICATION');
     }
   }
 }

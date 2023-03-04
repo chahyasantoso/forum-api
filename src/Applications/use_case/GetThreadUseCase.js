@@ -9,16 +9,16 @@ class GetThreadUseCase {
     this._validatePayload(useCasePayload);
 
     const { threadId } = useCasePayload;
-    const thread = await this._threadRepository.getThreadById(threadId);
+    const threadDetail = await this._threadRepository.getThreadDetail(threadId);
 
-    const comments = await this._commentRepository.getCommentsByThreadId(threadId);
+    const comments = await this._commentRepository.getComments(threadId);
     await Promise.all(comments.map(async (comment, index) => {
       comments[index].replies = await this._replyRepository.getReplies(comment.id);
     }));
 
-    thread.comments = comments;
+    threadDetail.comments = comments;
 
-    return thread;
+    return threadDetail;
   }
 
   /* eslint-disable class-methods-use-this */

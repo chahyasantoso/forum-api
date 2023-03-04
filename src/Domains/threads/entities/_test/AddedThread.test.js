@@ -22,7 +22,7 @@ describe('a AddedThread entities', () => {
 
   it('should throw error when title contains more than 100 character', () => {
     const payload = {
-      id: 'thread1',
+      id: 'thread-123',
       title: 'abcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghij',
       owner: 'user1',
     };
@@ -32,7 +32,7 @@ describe('a AddedThread entities', () => {
 
   it('should create addThread object correctly', () => {
     const payload = {
-      id: 'thread1',
+      id: 'thread-123',
       title: 'a title',
       owner: 'owner1',
     };

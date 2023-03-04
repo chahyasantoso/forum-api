@@ -1,6 +1,7 @@
 const ThreadRepository = require('../../../Domains/threads/ThreadRepository');
 const CommentRepository = require('../../../Domains/comments/CommentRepository');
 const GetThreadUseCase = require('../GetThreadUseCase');
+const ReplyRepository = require('../../../Domains/replies/ReplyRepository');
 
 describe('GetThreadUseCase', () => {
   it('should throw error if use case payload not contain needed property', async () => {
@@ -33,7 +34,7 @@ describe('GetThreadUseCase', () => {
       threadId: 'thread-123',
     };
 
-    const mockReturnedThread = {
+    const mockReturnedThreadDetail = {
       id: 'thread-123',
       title: 'a title',
       body: 'a body',
@@ -50,20 +51,30 @@ describe('GetThreadUseCase', () => {
       },
     ];
 
-    /** creating dependency of use case */
+    const mockReturnedReplies = [
+      {
+        id: 'reply-123',
+        username: 'userC',
+        date: '1/1/2023',
+        content: 'a reply by userC',
+      },
+    ];
+
     const mockThreadRepository = new ThreadRepository();
     const mockCommentRepository = new CommentRepository();
+    const mockReplyRepository = new ReplyRepository();
 
-    /** mocking needed function */
-    mockThreadRepository.getThreadById = jest.fn()
-      .mockImplementation(() => Promise.resolve(mockReturnedThread));
-    mockCommentRepository.getCommentsByThreadId = jest.fn()
+    mockThreadRepository.getThreadDetail = jest.fn()
+      .mockImplementation(() => Promise.resolve(mockReturnedThreadDetail));
+    mockCommentRepository.getComments = jest.fn()
       .mockImplementation(() => Promise.resolve(mockReturnedComments));
+    mockReplyRepository.getReplies = jest.fn()
+      .mockImplementation(() => Promise.resolve(mockReturnedReplies));
 
-    /** creating use case instance */
     const getThreadUseCase = new GetThreadUseCase({
       threadRepository: mockThreadRepository,
       commentRepository: mockCommentRepository,
+      replyRepository: mockReplyRepository,
     });
 
     // Action
@@ -71,12 +82,18 @@ describe('GetThreadUseCase', () => {
 
     // Assert
     expect(thread).toStrictEqual({
-      ...mockReturnedThread,
-      comments: [
-        ...mockReturnedComments,
+      ...mockReturnedThreadDetail,
+      comments:
+      [
+        {
+          ...mockReturnedComments[0],
+          replies: mockReturnedReplies,
+        },
       ],
     });
-    expect(mockThreadRepository.getThreadById).toBeCalledWith(useCasePayload.threadId);
-    expect(mockCommentRepository.getCommentsByThreadId).toBeCalledWith(useCasePayload.threadId);
+    expect(mockThreadRepository.getThreadDetail).toBeCalledWith(useCasePayload.threadId);
+    expect(mockCommentRepository.getComments).toBeCalledWith(useCasePayload.threadId);
+    expect(mockReplyRepository.getReplies).toBeCalledWith(mockReturnedComments[0].id);
+    expect(mockReplyRepository.getReplies).toBeCalledTimes(1);
   });
 });

@@ -1,35 +1,35 @@
-const NewComment = require('../NewComment');
+const AddedReply = require('../AddedReply');
 
-describe('a NewComment entities', () => {
+describe('a AddedReply entities', () => {
   it('should throw error when payload did not contain needed property', () => {
     const payload = {
       content: 'a content',
       owner: 'user-123',
     };
 
-    expect(() => new NewComment(payload)).toThrowError('NEW_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY');
+    expect(() => new AddedReply(payload)).toThrowError('ADDED_REPLY.NOT_CONTAIN_NEEDED_PROPERTY');
   });
 
   it('should throw error when payload did not meet data type specification', () => {
     const payload = {
-      threadId: 123,
+      id: 123,
       content: true,
       owner: 'user-123',
     };
 
-    expect(() => new NewComment(payload)).toThrowError('NEW_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION');
+    expect(() => new AddedReply(payload)).toThrowError('ADDED_REPLY.NOT_MEET_DATA_TYPE_SPECIFICATION');
   });
 
-  it('should create newComment object correctly', () => {
+  it('should create addedReply object correctly', () => {
     const payload = {
-      threadId: 'thread-123',
+      id: 'reply-123',
       content: 'a content',
       owner: 'owner-123',
     };
 
-    const { threadId, content, owner } = new NewComment(payload);
+    const { id, content, owner } = new AddedReply(payload);
 
-    expect(threadId).toEqual(payload.threadId);
+    expect(id).toEqual(payload.id);
     expect(content).toEqual(payload.content);
     expect(owner).toEqual(payload.owner);
   });

@@ -1,4 +1,4 @@
-const Thread = require('../Thread');
+const ThreadDetail = require('../ThreadDetail');
 
 describe('a Thread entities', () => {
   it('should throw error when payload did not contain needed property', () => {
@@ -8,7 +8,7 @@ describe('a Thread entities', () => {
       username: 'user-123',
     };
 
-    expect(() => new Thread(payload)).toThrowError('THREAD.NOT_CONTAIN_NEEDED_PROPERTY');
+    expect(() => new ThreadDetail(payload)).toThrowError('THREAD_DETAIL.NOT_CONTAIN_NEEDED_PROPERTY');
   });
 
   it('should throw error when payload did not meet data type specification', () => {
@@ -20,7 +20,7 @@ describe('a Thread entities', () => {
       username: 'user-123',
     };
 
-    expect(() => new Thread(payload)).toThrowError('THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION');
+    expect(() => new ThreadDetail(payload)).toThrowError('THREAD_DETAIL.NOT_MEET_DATA_TYPE_SPECIFICATION');
   });
 
   it('should throw error when title contains more than 100 character', () => {
@@ -32,10 +32,10 @@ describe('a Thread entities', () => {
       username: 'user-123',
     };
 
-    expect(() => new Thread(payload)).toThrowError('THREAD.TITLE_LIMIT_CHAR');
+    expect(() => new ThreadDetail(payload)).toThrowError('THREAD_DETAIL.TITLE_LIMIT_CHAR');
   });
 
-  it('should create thread object correctly', () => {
+  it('should create threadDetail object correctly', () => {
     const payload = {
       id: 'thread-123',
       title: 'a title',
@@ -46,7 +46,7 @@ describe('a Thread entities', () => {
 
     const {
       id, title, body, date, username,
-    } = new Thread(payload);
+    } = new ThreadDetail(payload);
 
     expect(id).toEqual(payload.id);
     expect(title).toEqual(payload.title);

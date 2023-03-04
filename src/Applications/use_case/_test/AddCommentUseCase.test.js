@@ -1,4 +1,4 @@
-const NewComment = require('../../../Domains/comments/entities/NewComment');
+const AddComment = require('../../../Domains/comments/entities/AddComment');
 const AddedComment = require('../../../Domains/comments/entities/AddedComment');
 const CommentRepository = require('../../../Domains/comments/CommentRepository');
 const AddCommentUseCase = require('../AddCommentUseCase');
@@ -19,17 +19,13 @@ describe('AddCommentUseCase', () => {
       owner: useCasePayload.owner,
     });
 
-    /** creating dependency of use case */
     const mockCommentRepository = new CommentRepository();
     const mockThreadRepository = new ThreadRepository();
-
-    /** mocking needed function */
     mockThreadRepository.verifyExisting = jest.fn()
       .mockImplementation(() => Promise.resolve());
     mockCommentRepository.add = jest.fn()
       .mockImplementation(() => Promise.resolve(mockAddedComment));
 
-    /** creating use case instance */
     const addCommentUseCase = new AddCommentUseCase({
       commentRepository: mockCommentRepository, threadRepository: mockThreadRepository,
     });
@@ -44,6 +40,6 @@ describe('AddCommentUseCase', () => {
       owner: useCasePayload.owner,
     }));
     expect(mockThreadRepository.verifyExisting).toBeCalledWith(useCasePayload.threadId);
-    expect(mockCommentRepository.add).toBeCalledWith(new NewComment(useCasePayload));
+    expect(mockCommentRepository.add).toBeCalledWith(new AddComment(useCasePayload));
   });
 });

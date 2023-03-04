@@ -1,13 +1,13 @@
-const Comment = require('../Comment');
+const CommentDetail = require('../CommentDetail');
 
-describe('a Comment entities', () => {
+describe('a CommentDetail entities', () => {
   it('should throw error when payload did not contain needed property', () => {
     const payload = {
       username: 'user-123',
       content: 'a content',
     };
 
-    expect(() => new Comment(payload)).toThrowError('COMMENT.NOT_CONTAIN_NEEDED_PROPERTY');
+    expect(() => new CommentDetail(payload)).toThrowError('COMMENT_DETAIL.NOT_CONTAIN_NEEDED_PROPERTY');
   });
 
   it('should throw error when payload did not meet data type specification', () => {
@@ -19,12 +19,12 @@ describe('a Comment entities', () => {
       isDelete: 'false',
     };
 
-    expect(() => new Comment(payload)).toThrowError('COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION');
+    expect(() => new CommentDetail(payload)).toThrowError('COMMENT_DETAIL.NOT_MEET_DATA_TYPE_SPECIFICATION');
   });
 
-  it('should create comment object correctly', () => {
+  it('should create commentDetail object correctly', () => {
     const payload = {
-      id: 'thread-123',
+      id: 'comment-123',
       username: 'user-123',
       date: '1/1/2023',
       content: 'a content',
@@ -33,7 +33,7 @@ describe('a Comment entities', () => {
 
     const {
       id, username, date, content,
-    } = new Comment(payload);
+    } = new CommentDetail(payload);
 
     expect(id).toEqual(payload.id);
     expect(username).toEqual(payload.username);
@@ -41,9 +41,9 @@ describe('a Comment entities', () => {
     expect(content).toEqual(payload.content);
   });
 
-  it('should create comment object with content set to **komentar telah dihapus** when isDelete is true', () => {
+  it('should create commentDetail object with content set to **komentar telah dihapus** when isDelete is true', () => {
     const payload = {
-      id: 'thread-123',
+      id: 'comment-123',
       username: 'user-123',
       date: '1/1/2023',
       content: 'a content',
@@ -52,7 +52,7 @@ describe('a Comment entities', () => {
 
     const {
       id, username, date, content,
-    } = new Comment(payload);
+    } = new CommentDetail(payload);
 
     expect(id).toEqual(payload.id);
     expect(username).toEqual(payload.username);
