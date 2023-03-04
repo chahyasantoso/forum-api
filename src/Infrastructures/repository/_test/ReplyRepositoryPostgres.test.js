@@ -2,7 +2,6 @@ const pool = require('../../database/postgres/pool');
 const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const ThreadsTableTestHelper = require('../../../../tests/ThreadsTableTestHelper');
 const CommentsTableTestHelper = require('../../../../tests/CommentsTableTestHelper');
-const RepliesTableTestHelper = require('../../../../tests/RepliesTableTestHelper');
 
 const AddReply = require('../../../Domains/replies/entities/AddReply');
 const AddedReply = require('../../../Domains/replies/entities/AddedReply');
@@ -36,7 +35,6 @@ describe('ReplyRepositoryPostgres', () => {
   });
 
   afterAll(async () => {
-    await RepliesTableTestHelper.cleanTable();
     await CommentsTableTestHelper.cleanTable();
     await ThreadsTableTestHelper.cleanTable();
     await UsersTableTestHelper.cleanTable();
@@ -64,7 +62,7 @@ describe('ReplyRepositoryPostgres', () => {
         content: addReply.content,
         owner: addReply.owner,
       }));
-      const row = await RepliesTableTestHelper.findReplyById('reply-123');
+      const row = await CommentsTableTestHelper.findReplyById('reply-123');
       expect(row).toHaveLength(1);
     });
   });
@@ -78,16 +76,16 @@ describe('ReplyRepositoryPostgres', () => {
       await replyRepositoryPostgres.delete('reply-123');
 
       // Assert
-      const row = await RepliesTableTestHelper.findReplyById('reply-123');
+      const row = await CommentsTableTestHelper.findReplyById('reply-123');
       expect(row[0].is_delete).toEqual(true);
 
-      await RepliesTableTestHelper.cleanTable();
+      await CommentsTableTestHelper.cleanReplies();
     });
   });
 
   describe('verifyExisting function', () => {
     beforeAll(async () => {
-      await RepliesTableTestHelper.addReply({
+      await CommentsTableTestHelper.addReply({
         id: 'reply-123',
         content: 'a reply',
         date: '1/1/2023',

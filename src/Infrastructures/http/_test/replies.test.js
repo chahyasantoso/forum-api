@@ -2,7 +2,6 @@ const pool = require('../../database/postgres/pool');
 const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const ThreadsTableTestHelper = require('../../../../tests/ThreadsTableTestHelper');
 const CommentsTableTestHelper = require('../../../../tests/CommentsTableTestHelper');
-const RepliesTableTestHelper = require('../../../../tests/RepliesTableTestHelper');
 const ServerTestHelper = require('../../../../tests/ServerTestHelper');
 const container = require('../../container');
 const createServer = require('../createServer');
@@ -52,7 +51,6 @@ describe('/threads endpoint', () => {
   });
 
   afterAll(async () => {
-    await RepliesTableTestHelper.cleanTable();
     await CommentsTableTestHelper.cleanTable();
     await ThreadsTableTestHelper.cleanTable();
     await UsersTableTestHelper.cleanTable();
@@ -205,7 +203,7 @@ describe('/threads endpoint', () => {
       expect(responseJson.data).toBeDefined();
       expect(responseJson.data.addedReply).toBeDefined();
 
-      RepliesTableTestHelper.cleanTable();
+      CommentsTableTestHelper.cleanReplies();
     });
   });
 
@@ -308,8 +306,6 @@ describe('/threads endpoint', () => {
         method: 'GET',
         url: `/threads/${testData.threads[0].id}`,
       });
-
-      console.log(testData);
 
       // Assert
       const responseJson = JSON.parse(response.payload);
