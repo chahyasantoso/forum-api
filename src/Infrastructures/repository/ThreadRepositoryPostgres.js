@@ -23,7 +23,7 @@ class ThreadRepositoryPostgres extends ThreadRepository {
     };
 
     const result = await this._pool.query(query);
-    return new AddedThread({ ...result.rows[0] });
+    return new AddedThread(result.rows[0]);
   }
 
   async verifyExisting(threadId) {
@@ -53,7 +53,7 @@ class ThreadRepositoryPostgres extends ThreadRepository {
     if (result.rows.length === 0) {
       throw new NotFoundError('Thread tidak ditemukan');
     }
-    return new ThreadDetail({ ...result.rows[0] });
+    return new ThreadDetail(result.rows[0]);
   }
 }
 

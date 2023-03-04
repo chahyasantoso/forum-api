@@ -27,7 +27,7 @@ class ReplyRepositoryPostgres extends ReplyRepository {
     };
 
     const result = await this._pool.query(query);
-    return new AddedReply({ ...result.rows[0] });
+    return new AddedReply(result.rows[0]);
   }
 
   async delete(replyId) {
@@ -52,7 +52,7 @@ class ReplyRepositoryPostgres extends ReplyRepository {
 
     const result = await this._pool.query(query);
     if (result.rows.length === 0) {
-      throw new NotFoundError('Reply tidak ditemukan');
+      throw new NotFoundError('Reply / Comment / Thread tidak ditemukan');
     }
   }
 
