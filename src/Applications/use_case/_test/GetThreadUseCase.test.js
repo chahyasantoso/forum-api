@@ -2,6 +2,9 @@ const ThreadRepository = require('../../../Domains/threads/ThreadRepository');
 const CommentRepository = require('../../../Domains/comments/CommentRepository');
 const GetThreadUseCase = require('../GetThreadUseCase');
 const ReplyRepository = require('../../../Domains/replies/ReplyRepository');
+const ThreadDetail = require('../../../Domains/threads/entities/ThreadDetail');
+const CommentDetail = require('../../../Domains/comments/entities/CommentDetail');
+const ReplyDetail = require('../../../Domains/replies/entities/ReplyDetail');
 
 describe('GetThreadUseCase', () => {
   it('should throw error if use case payload not contain needed property', async () => {
@@ -34,30 +37,58 @@ describe('GetThreadUseCase', () => {
       threadId: 'thread-123',
     };
 
-    const mockReturnedThreadDetail = {
+    const expectedThread = new ThreadDetail({
       id: 'thread-123',
       title: 'a title',
       body: 'a body',
-      date: '1/1/2023',
+      date: '2023-01-01',
       username: 'userA',
-    };
-
-    const mockReturnedComments = [
-      {
+    });
+    expectedThread.comments = [
+      new CommentDetail({
         id: 'comments-123',
         username: 'userB',
-        date: '1/1/2023',
+        date: '2023-01-01',
         content: 'a comment by userB',
-      },
+        isDelete: false,
+      }),
+    ];
+    expectedThread.comments[0].replies = [
+      new ReplyDetail({
+        id: 'reply-123',
+        username: 'userC',
+        date: '2023-01-01',
+        content: 'a reply by userC',
+        isDelete: false,
+      }),
+    ];
+
+    const mockReturnedThreadDetail = new ThreadDetail({
+      id: 'thread-123',
+      title: 'a title',
+      body: 'a body',
+      date: '2023-01-01',
+      username: 'userA',
+    });
+
+    const mockReturnedComments = [
+      new CommentDetail({
+        id: 'comments-123',
+        username: 'userB',
+        date: '2023-01-01',
+        content: 'a comment by userB',
+        isDelete: false,
+      }),
     ];
 
     const mockReturnedReplies = [
-      {
+      new ReplyDetail({
         id: 'reply-123',
         username: 'userC',
-        date: '1/1/2023',
+        date: '2023-01-01',
         content: 'a reply by userC',
-      },
+        isDelete: false,
+      }),
     ];
 
     const mockThreadRepository = new ThreadRepository();
@@ -69,7 +100,7 @@ describe('GetThreadUseCase', () => {
     mockCommentRepository.getComments = jest.fn()
       .mockImplementation(() => Promise.resolve(mockReturnedComments));
     mockReplyRepository.getReplies = jest.fn()
-      .mockImplementation(() => Promise.resolve(mockReturnedReplies));
+      .mockImplementationOnce(() => Promise.resolve(mockReturnedReplies));
 
     const getThreadUseCase = new GetThreadUseCase({
       threadRepository: mockThreadRepository,
@@ -81,19 +112,11 @@ describe('GetThreadUseCase', () => {
     const thread = await getThreadUseCase.execute(useCasePayload);
 
     // Assert
-    expect(thread).toStrictEqual({
-      ...mockReturnedThreadDetail,
-      comments:
-      [
-        {
-          ...mockReturnedComments[0],
-          replies: mockReturnedReplies,
-        },
-      ],
-    });
+    expect(thread).toStrictEqual(expectedThread);
     expect(mockThreadRepository.getThreadDetail).toBeCalledWith(useCasePayload.threadId);
     expect(mockCommentRepository.getComments).toBeCalledWith(useCasePayload.threadId);
-    expect(mockReplyRepository.getReplies).toBeCalledWith(mockReturnedComments[0].id);
-    expect(mockReplyRepository.getReplies).toBeCalledTimes(1);
+
+    expect(mockReplyRepository.getReplies).toBeCalledTimes(mockReturnedComments.length);
+    expect(mockReplyRepository.getReplies).toHaveBeenNthCalledWith(1, mockReturnedComments[0].id);
   });
 });

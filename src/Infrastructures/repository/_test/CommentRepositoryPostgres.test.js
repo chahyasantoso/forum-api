@@ -83,9 +83,9 @@ describe('CommentRepositoryPostgres', () => {
         date: '1/1/2023',
         threadId: 'thread-123',
         owner: 'user-123',
+        isDelete: false,
       });
     });
-
     it('should throw NotFoundError error when a comment and/or a thread is not found', async () => {
       // Arrange
       const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, () => {});
@@ -146,6 +146,16 @@ describe('CommentRepositoryPostgres', () => {
   });
 
   describe('getComments function', () => {
+    beforeAll(async () => {
+      await CommentsTableTestHelper.addComment({
+        id: 'comment-456',
+        content: 'a comment',
+        date: '1/2/2023',
+        threadId: 'thread-123',
+        owner: 'user-123',
+        isDelete: false,
+      });
+    });
     it('should return array of CommentDetail', async () => {
       // Arrange
       const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, () => {});
@@ -154,14 +164,23 @@ describe('CommentRepositoryPostgres', () => {
       const comments = await commentRepositoryPostgres.getComments('thread-123');
 
       // Assert
-      expect(comments).toHaveLength(1);
-      expect(comments[0]).toStrictEqual(new CommentDetail({
+      expect(comments).toHaveLength(2);
+      expect(comments[0]).toBeInstanceOf(CommentDetail);
+      expect(comments[0]).toEqual({
         id: 'comment-123',
         content: 'a comment',
         date: '1/1/2023',
         username: 'userA',
-        isDelete: false,
-      }));
+      });
+      expect(comments[1]).toBeInstanceOf(CommentDetail);
+      expect(comments[1]).toEqual({
+        id: 'comment-456',
+        content: 'a comment',
+        date: '1/2/2023',
+        username: 'userA',
+      });
+      expect(new Date(comments[0].date).getTime())
+        .toBeLessThan(new Date(comments[1].date).getTime());
     });
   });
 });

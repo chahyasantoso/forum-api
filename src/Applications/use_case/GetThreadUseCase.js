@@ -15,7 +15,6 @@ class GetThreadUseCase {
     await Promise.all(comments.map(async (comment, index) => {
       comments[index].replies = await this._replyRepository.getReplies(comment.id);
     }));
-
     threadDetail.comments = comments;
 
     return threadDetail;

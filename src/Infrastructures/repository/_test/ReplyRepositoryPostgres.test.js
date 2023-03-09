@@ -31,6 +31,7 @@ describe('ReplyRepositoryPostgres', () => {
       date: '1/1/2023',
       threadId: 'thread-123',
       owner: 'user-123',
+      isDelete: false,
     });
   });
 
@@ -92,6 +93,7 @@ describe('ReplyRepositoryPostgres', () => {
         threadId: 'thread-123',
         owner: 'user-123',
         commentId: 'comment-123',
+        isDelete: false,
       });
     });
 
@@ -158,6 +160,17 @@ describe('ReplyRepositoryPostgres', () => {
   });
 
   describe('getReplies function', () => {
+    beforeAll(async () => {
+      await CommentsTableTestHelper.addReply({
+        id: 'reply-456',
+        content: 'a reply',
+        date: '1/2/2023',
+        threadId: 'thread-123',
+        owner: 'user-123',
+        commentId: 'comment-123',
+        isDelete: false,
+      });
+    });
     it('should return array of ReplyDetail', async () => {
       // Arrange
       const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, () => {});
@@ -166,14 +179,23 @@ describe('ReplyRepositoryPostgres', () => {
       const replies = await replyRepositoryPostgres.getReplies('comment-123');
 
       // Assert
-      expect(replies).toHaveLength(1);
-      expect(replies[0]).toStrictEqual(new ReplyDetail({
+      expect(replies).toHaveLength(2);
+      expect(replies[0]).toBeInstanceOf(ReplyDetail);
+      expect(replies[0]).toEqual({
         id: 'reply-123',
         content: 'a reply',
         date: '1/1/2023',
         username: 'userA',
-        isDelete: false,
-      }));
+      });
+      expect(replies[1]).toBeInstanceOf(ReplyDetail);
+      expect(replies[1]).toEqual({
+        id: 'reply-456',
+        content: 'a reply',
+        date: '1/2/2023',
+        username: 'userA',
+      });
+      expect(new Date(replies[0].date).getTime())
+        .toBeLessThan(new Date(replies[1].date).getTime());
     });
   });
 });

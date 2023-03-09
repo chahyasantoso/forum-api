@@ -100,13 +100,14 @@ describe('ThreadRepositoryPostgres', () => {
 
       // Action
       const thread = await threadRepositoryPostgres.getThreadDetail('thread-123');
-      expect(thread).toStrictEqual(new ThreadDetail({
+      expect(thread).toBeInstanceOf(ThreadDetail);
+      expect(thread).toEqual({
         id: 'thread-123',
         title: 'a title',
         body: 'a body',
         date: '1/1/2023',
         username: 'userA',
-      }));
+      });
     });
   });
 });
