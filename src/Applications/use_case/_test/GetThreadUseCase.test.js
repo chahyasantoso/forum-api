@@ -69,7 +69,7 @@ describe('GetThreadUseCase', () => {
       username: 'userA',
     });
 
-    const mockReturnedComments = new Map([
+    const mockReturnedCommentsMap = new Map([
       [
         'comment-123',
         new CommentDetail({
@@ -82,7 +82,7 @@ describe('GetThreadUseCase', () => {
       ],
     ]);
 
-    const mockReturnedReplies = new Map([
+    const mockReturnedRepliesMap = new Map([
       [
         'reply-123',
         new ReplyDetail({
@@ -101,8 +101,8 @@ describe('GetThreadUseCase', () => {
     const mockReplyRepository = new ReplyRepository();
 
     mockThreadRepository.getThreadDetail = jest.fn(() => Promise.resolve(mockReturnedThreadDetail));
-    mockCommentRepository.getComments = jest.fn(() => Promise.resolve(mockReturnedComments));
-    mockReplyRepository.getReplies = jest.fn(() => Promise.resolve(mockReturnedReplies));
+    mockCommentRepository.getComments = jest.fn(() => Promise.resolve(mockReturnedCommentsMap));
+    mockReplyRepository.getReplies = jest.fn(() => Promise.resolve(mockReturnedRepliesMap));
 
     const getThreadUseCase = new GetThreadUseCase({
       threadRepository: mockThreadRepository,
@@ -117,6 +117,7 @@ describe('GetThreadUseCase', () => {
     expect(thread).toStrictEqual(expectedThread);
     expect(mockThreadRepository.getThreadDetail).toBeCalledWith(useCasePayload.threadId);
     expect(mockCommentRepository.getComments).toBeCalledWith(useCasePayload.threadId);
-    expect(mockReplyRepository.getReplies).toBeCalledWith(Array.from(mockReturnedComments.keys()));
+    expect(mockReplyRepository.getReplies)
+      .toBeCalledWith(Array.from(mockReturnedCommentsMap.keys()));
   });
 });
