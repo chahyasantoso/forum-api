@@ -104,7 +104,7 @@ describe('ThreadRepositoryPostgres', () => {
         id: 'thread-123',
         title: 'a title',
         body: 'a body',
-        date: new Date('2023-01-01').toISOString(),
+        date: new Date('2023-01-01'),
         username: 'userA',
       }));
     });

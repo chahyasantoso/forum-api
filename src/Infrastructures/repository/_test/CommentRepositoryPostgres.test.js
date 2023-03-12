@@ -168,7 +168,7 @@ describe('CommentRepositoryPostgres', () => {
       expect(comments[0]).toStrictEqual(new CommentDetail({
         id: 'comment-123',
         content: 'a comment',
-        date: new Date('2023-01-01').toISOString(),
+        date: new Date('2023-01-01'),
         username: 'userA',
         isDelete: false,
       }));
@@ -176,7 +176,7 @@ describe('CommentRepositoryPostgres', () => {
       expect(comments[1]).toStrictEqual(new CommentDetail({
         id: 'comment-456',
         content: 'a comment',
-        date: new Date('2023-02-01').toISOString(),
+        date: new Date('2023-02-01'),
         username: 'userA',
         isDelete: false,
       }));

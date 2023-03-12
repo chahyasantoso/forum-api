@@ -183,7 +183,7 @@ describe('ReplyRepositoryPostgres', () => {
       expect(replies[0]).toStrictEqual(new ReplyDetail({
         id: 'reply-123',
         content: 'a reply',
-        date: new Date('2023-01-01').toISOString(),
+        date: new Date('2023-01-01'),
         username: 'userA',
         isDelete: false,
       }));
@@ -191,7 +191,7 @@ describe('ReplyRepositoryPostgres', () => {
       expect(replies[1]).toStrictEqual(new ReplyDetail({
         id: 'reply-456',
         content: 'a reply',
-        date: new Date('2023-02-01').toISOString(),
+        date: new Date('2023-02-01'),
         username: 'userA',
         isDelete: false,
       }));

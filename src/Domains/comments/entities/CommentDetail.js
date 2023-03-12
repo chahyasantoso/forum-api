@@ -9,7 +9,7 @@ class CommentDetail {
 
     this.id = id;
     this.username = username;
-    this.date = date;
+    this.date = date.toISOString();
     this.content = isDelete ? '**komentar telah dihapus**' : content;
   }
 
@@ -23,7 +23,7 @@ class CommentDetail {
 
     if (typeof id !== 'string'
     || typeof username !== 'string'
-    || typeof date !== 'string'
+    || !(date instanceof Date)
     || typeof content !== 'string'
     || typeof isDelete !== 'boolean') {
       throw new Error('COMMENT_DETAIL.NOT_MEET_DATA_TYPE_SPECIFICATION');

@@ -28,7 +28,7 @@ describe('a Thread entities', () => {
       id: 'thread-123',
       title: 'abcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghij',
       body: 'a body',
-      date: '2023-01-01T00:00:00.000Z',
+      date: new Date('2023-01-01'),
       username: 'user-123',
     };
 
@@ -40,7 +40,7 @@ describe('a Thread entities', () => {
       id: 'thread-123',
       title: 'a title',
       body: 'a body',
-      date: '2023-01-01T00:00:00.000Z',
+      date: new Date('2023-01-01'),
       username: 'user-123',
     };
 
@@ -51,7 +51,7 @@ describe('a Thread entities', () => {
     expect(id).toEqual(payload.id);
     expect(title).toEqual(payload.title);
     expect(body).toEqual(payload.body);
-    expect(date).toEqual(payload.date);
+    expect(date).toEqual(payload.date.toISOString());
     expect(username).toEqual(payload.username);
   });
 });

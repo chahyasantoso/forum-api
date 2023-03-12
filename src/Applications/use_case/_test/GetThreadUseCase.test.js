@@ -41,14 +41,14 @@ describe('GetThreadUseCase', () => {
       id: 'thread-123',
       title: 'a title',
       body: 'a body',
-      date: '2023-01-01T00:00:00.000Z',
+      date: new Date('2023-01-01'),
       username: 'userA',
     });
     expectedThread.comments = [
       new CommentDetail({
         id: 'comments-123',
         username: 'userB',
-        date: '2023-01-01T00:00:00.000Z',
+        date: new Date('2023-01-01'),
         content: 'a comment by userB',
         isDelete: false,
       }),
@@ -57,7 +57,7 @@ describe('GetThreadUseCase', () => {
       new ReplyDetail({
         id: 'reply-123',
         username: 'userC',
-        date: '2023-01-01T00:00:00.000Z',
+        date: new Date('2023-01-01'),
         content: 'a reply by userC',
         isDelete: false,
       }),
@@ -67,7 +67,7 @@ describe('GetThreadUseCase', () => {
       id: 'thread-123',
       title: 'a title',
       body: 'a body',
-      date: '2023-01-01T00:00:00.000Z',
+      date: new Date('2023-01-01'),
       username: 'userA',
     });
 
@@ -75,7 +75,7 @@ describe('GetThreadUseCase', () => {
       new CommentDetail({
         id: 'comments-123',
         username: 'userB',
-        date: '2023-01-01T00:00:00.000Z',
+        date: new Date('2023-01-01'),
         content: 'a comment by userB',
         isDelete: false,
       }),
@@ -85,7 +85,7 @@ describe('GetThreadUseCase', () => {
       new ReplyDetail({
         id: 'reply-123',
         username: 'userC',
-        date: '2023-01-01T00:00:00.000Z',
+        date: new Date('2023-01-01'),
         content: 'a reply by userC',
         isDelete: false,
       }),

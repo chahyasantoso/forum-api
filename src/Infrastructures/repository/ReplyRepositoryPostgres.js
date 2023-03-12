@@ -87,7 +87,7 @@ class ReplyRepositoryPostgres extends ReplyRepository {
     return result.rows.map(({
       id, content, date, username, is_delete,
     }) => new ReplyDetail({
-      id, content, date: date.toISOString(), username, isDelete: is_delete,
+      id, content, date, username, isDelete: is_delete,
     }));
   }
 }
