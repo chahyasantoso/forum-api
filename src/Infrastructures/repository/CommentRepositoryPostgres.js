@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 const AddedComment = require('../../Domains/comments/entities/AddedComment');
 const CommentDetail = require('../../Domains/comments/entities/CommentDetail');
 const CommentRepository = require('../../Domains/comments/CommentRepository');
@@ -70,7 +71,6 @@ class CommentRepositoryPostgres extends CommentRepository {
     }
   }
 
-  /* eslint-disable camelcase */
   async getComments(threadId) {
     const query = {
       text: `SELECT comments.id, comments.content, comments.date, users.username, comments.is_delete 
@@ -82,11 +82,14 @@ class CommentRepositoryPostgres extends CommentRepository {
     };
     const result = await this._pool.query(query);
 
-    return result.rows.map(({
+    return new Map(result.rows.map(({
       id, content, date, username, is_delete,
-    }) => new CommentDetail({
-      id, content, date, username, isDelete: is_delete,
-    }));
+    }) => [
+      id,
+      new CommentDetail({
+        id, content, date, username, isDelete: is_delete,
+      }),
+    ]));
   }
 }
 

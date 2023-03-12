@@ -156,16 +156,19 @@ describe('CommentRepositoryPostgres', () => {
         isDelete: false,
       });
     });
-    it('should return array of CommentDetail', async () => {
+    it('should return Map of CommentDetail', async () => {
       // Arrange
       const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, () => {});
 
       // Action
-      const comments = await commentRepositoryPostgres.getComments('thread-123');
+      const commentsMap = await commentRepositoryPostgres.getComments('thread-123');
 
       // Assert
-      expect(comments).toHaveLength(2);
-      expect(comments[0]).toStrictEqual(new CommentDetail({
+      expect(commentsMap).toBeInstanceOf(Map);
+      expect(commentsMap.size).toEqual(2);
+
+      const comment1 = commentsMap.get('comment-123');
+      expect(comment1).toStrictEqual(new CommentDetail({
         id: 'comment-123',
         content: 'a comment',
         date: new Date('2023-01-01'),
@@ -173,7 +176,8 @@ describe('CommentRepositoryPostgres', () => {
         isDelete: false,
       }));
 
-      expect(comments[1]).toStrictEqual(new CommentDetail({
+      const comment2 = commentsMap.get('comment-456');
+      expect(comment2).toStrictEqual(new CommentDetail({
         id: 'comment-456',
         content: 'a comment',
         date: new Date('2023-02-01'),
@@ -181,8 +185,8 @@ describe('CommentRepositoryPostgres', () => {
         isDelete: false,
       }));
 
-      expect(new Date(comments[0].date).getTime())
-        .toBeLessThan(new Date(comments[1].date).getTime());
+      expect(new Date(comment1.date).getTime())
+        .toBeLessThan(new Date(comment2.date).getTime());
     });
   });
 });

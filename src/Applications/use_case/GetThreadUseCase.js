@@ -11,26 +11,28 @@ class GetThreadUseCase {
     const { threadId } = useCasePayload;
     const threadDetail = await this._threadRepository.getThreadDetail(threadId);
 
-    /* commentsAndReplies adalah object yang memiliki property semua id dari comment dan replies
-      contoh: commentAndReplies {
-        'comment-123': object CommentDetail untuk id comment-123
-        'reply-123': object ReplyDetail untuk id reply-123
+    const commentsMap = await this._commentRepository.getComments(threadId);
+    const repliesMap = await this._replyRepository.getReplies(Array.from(commentsMap.keys()));
+
+    const all = new Map([...commentsMap, ...repliesMap]);
+    all.forEach((detail) => {
+      const { replyOfId } = detail;
+      if (replyOfId) {
+        const parent = all.get(replyOfId);
+        parent.replies ||= [];
+        parent.replies.push(detail);
+        // eslint-disable-next-line no-param-reassign
+        delete detail.replyOfId;
       }
-      iterate keysnya untuk cari parent kemudian push repliesnya
-    */
-    // const commentsAndReplies = await this._commentRepository.getCommentsAndReplies(threadId);
-    // const commentsWithReplies = commentsAndReplies.getHierarchyArray();
+    });
 
-    const comments = await this._commentRepository.getComments(threadId);
-    await Promise.all(comments.map(async (comment, index) => {
-      comments[index].replies = await this._replyRepository.getReplies(comment.id);
-    }));
-    threadDetail.comments = comments;
+    threadDetail.comments = Array.from(commentsMap)
+      .map(([id, commentDetail]) => commentDetail); // eslint-disable-line no-unused-vars
 
-    return threadDetail;
+    return JSON.parse(JSON.stringify(threadDetail));
   }
 
-  /* eslint-disable class-methods-use-this */
+  // eslint-disable-next-line class-methods-use-this
   _validatePayload(payload) {
     const { threadId } = payload;
     if (!threadId) {

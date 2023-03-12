@@ -171,33 +171,39 @@ describe('ReplyRepositoryPostgres', () => {
         isDelete: false,
       });
     });
-    it('should return array of ReplyDetail', async () => {
+    it('should return Map of ReplyDetail', async () => {
       // Arrange
       const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, () => {});
 
       // Action
-      const replies = await replyRepositoryPostgres.getReplies('comment-123');
+      const repliesMap = await replyRepositoryPostgres.getReplies(['comment-123']);
 
       // Assert
-      expect(replies).toHaveLength(2);
-      expect(replies[0]).toStrictEqual(new ReplyDetail({
+      expect(repliesMap).toBeInstanceOf(Map);
+      expect(repliesMap.size).toEqual(2);
+
+      const reply1 = repliesMap.get('reply-123');
+      expect(reply1).toStrictEqual(new ReplyDetail({
         id: 'reply-123',
         content: 'a reply',
         date: new Date('2023-01-01'),
         username: 'userA',
         isDelete: false,
+        replyOfId: 'comment-123',
       }));
 
-      expect(replies[1]).toStrictEqual(new ReplyDetail({
+      const reply2 = repliesMap.get('reply-456');
+      expect(reply2).toStrictEqual(new ReplyDetail({
         id: 'reply-456',
         content: 'a reply',
         date: new Date('2023-02-01'),
         username: 'userA',
         isDelete: false,
+        replyOfId: 'comment-123',
       }));
 
-      expect(new Date(replies[0].date).getTime())
-        .toBeLessThan(new Date(replies[1].date).getTime());
+      expect(new Date(reply1.date).getTime())
+        .toBeLessThan(new Date(reply2.date).getTime());
     });
   });
 });

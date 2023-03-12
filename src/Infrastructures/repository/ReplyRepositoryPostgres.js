@@ -73,22 +73,49 @@ class ReplyRepositoryPostgres extends ReplyRepository {
   }
 
   /* eslint-disable camelcase */
-  async getReplies(commentId) {
+  async getReplies(commentIds) {
     const query = {
-      text: `SELECT comments.id, comments.content, comments.date, users.username, comments.is_delete 
+      /*
+      text: `SELECT comments.id, comments.content, comments.date,
+      users.username, comments.is_delete, comments.reply_of_id
       FROM comments
       LEFT JOIN users ON comments.owner = users.id
-      WHERE comments.reply_of_id = $1
+      WHERE comments.reply_of_id = ANY($1::text[])
       ORDER BY comments.date ASC`,
-      values: [commentId],
+      */
+      text: `WITH RECURSIVE replies AS (
+        SELECT
+        id, content, date, owner, is_delete, reply_of_id
+        FROM comments
+        WHERE id = ANY($1::text[])
+      UNION
+        SELECT
+        cm.id, cm.content, cm.date, cm.owner, cm.is_delete, cm.reply_of_id
+        FROM comments cm
+        INNER JOIN replies ON replies.id = cm.reply_of_id
+      ) SELECT
+          replies.id,
+          replies.content,
+          replies.date,
+          users.username,
+          replies.is_delete,
+          replies.reply_of_id
+        FROM replies
+        LEFT JOIN users ON replies.owner = users.id
+        WHERE replies.reply_of_id IS NOT NULL
+        ORDER BY replies.date ASC`,
+      values: [commentIds],
     };
     const result = await this._pool.query(query);
 
-    return result.rows.map(({
-      id, content, date, username, is_delete,
-    }) => new ReplyDetail({
-      id, content, date, username, isDelete: is_delete,
-    }));
+    return new Map(result.rows.map(({
+      id, content, date, username, is_delete, reply_of_id,
+    }) => [
+      id,
+      new ReplyDetail({
+        id, content, date, username, isDelete: is_delete, replyOfId: reply_of_id,
+      }),
+    ]));
   }
 }
 
