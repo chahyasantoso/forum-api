@@ -10,8 +10,9 @@ exports.up = (pgm) => {
       notNull: true,
     },
     date: {
-      type: 'TEXT',
+      type: 'TIMESTAMP',
       notNull: true,
+      default: pgm.func('current_timestamp'),
     },
     thread_id: {
       type: 'VARCHAR(50)',

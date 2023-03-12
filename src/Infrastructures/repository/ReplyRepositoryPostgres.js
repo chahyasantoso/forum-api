@@ -17,13 +17,12 @@ class ReplyRepositoryPostgres extends ReplyRepository {
     } = addReply;
 
     const id = `reply-${this._idGenerator()}`;
-    const date = new Date().toISOString();
 
     const query = {
-      text: `INSERT INTO comments(id, content, date, thread_id, owner, reply_of_id) 
-      VALUES($1, $2, $3, $4, $5, $6) 
+      text: `INSERT INTO comments(id, content, thread_id, owner, reply_of_id) 
+      VALUES($1, $2, $3, $4, $5) 
       RETURNING id, content, owner`,
-      values: [id, content, date, threadId, owner, commentId],
+      values: [id, content, threadId, owner, commentId],
     };
 
     const result = await this._pool.query(query);
@@ -88,7 +87,7 @@ class ReplyRepositoryPostgres extends ReplyRepository {
     return result.rows.map(({
       id, content, date, username, is_delete,
     }) => new ReplyDetail({
-      id, content, date, username, isDelete: is_delete,
+      id, content, date: date.toISOString(), username, isDelete: is_delete,
     }));
   }
 }

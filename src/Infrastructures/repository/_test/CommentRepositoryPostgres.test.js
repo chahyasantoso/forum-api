@@ -22,7 +22,7 @@ describe('CommentRepositoryPostgres', () => {
       id: 'thread-123',
       title: 'a title',
       body: 'a body',
-      date: '1/1/2023',
+      date: new Date('2023-01-01'),
       owner: 'user-123',
     });
   });
@@ -80,7 +80,7 @@ describe('CommentRepositoryPostgres', () => {
       await CommentsTableTestHelper.addComment({
         id: 'comment-123',
         content: 'a comment',
-        date: '1/1/2023',
+        date: new Date('2023-01-01'),
         threadId: 'thread-123',
         owner: 'user-123',
         isDelete: false,
@@ -150,7 +150,7 @@ describe('CommentRepositoryPostgres', () => {
       await CommentsTableTestHelper.addComment({
         id: 'comment-456',
         content: 'a comment',
-        date: '1/2/2023',
+        date: new Date('2023-02-01'),
         threadId: 'thread-123',
         owner: 'user-123',
         isDelete: false,
@@ -165,20 +165,22 @@ describe('CommentRepositoryPostgres', () => {
 
       // Assert
       expect(comments).toHaveLength(2);
-      expect(comments[0]).toBeInstanceOf(CommentDetail);
-      expect(comments[0]).toEqual({
+      expect(comments[0]).toStrictEqual(new CommentDetail({
         id: 'comment-123',
         content: 'a comment',
-        date: '1/1/2023',
+        date: new Date('2023-01-01').toISOString(),
         username: 'userA',
-      });
-      expect(comments[1]).toBeInstanceOf(CommentDetail);
-      expect(comments[1]).toEqual({
+        isDelete: false,
+      }));
+
+      expect(comments[1]).toStrictEqual(new CommentDetail({
         id: 'comment-456',
         content: 'a comment',
-        date: '1/2/2023',
+        date: new Date('2023-02-01').toISOString(),
         username: 'userA',
-      });
+        isDelete: false,
+      }));
+
       expect(new Date(comments[0].date).getTime())
         .toBeLessThan(new Date(comments[1].date).getTime());
     });

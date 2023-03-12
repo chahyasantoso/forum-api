@@ -14,7 +14,7 @@ describe('a CommentDetail entities', () => {
     const payload = {
       id: 123,
       username: 'user-123',
-      date: '1/1/2023',
+      date: '2023-01-01T00:00:00.000Z',
       content: true,
       isDelete: 'false',
     };
@@ -26,7 +26,7 @@ describe('a CommentDetail entities', () => {
     const payload = {
       id: 'comment-123',
       username: 'user-123',
-      date: '1/1/2023',
+      date: '2023-01-01T00:00:00.000Z',
       content: 'a content',
       isDelete: false,
     };
@@ -45,7 +45,7 @@ describe('a CommentDetail entities', () => {
     const payload = {
       id: 'comment-123',
       username: 'user-123',
-      date: '1/1/2023',
+      date: '2023-01-01T00:00:00.000Z',
       content: 'a content',
       isDelete: true,
     };

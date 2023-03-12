@@ -57,7 +57,7 @@ describe('ThreadRepositoryPostgres', () => {
         id: 'thread-123',
         title: 'a title',
         body: 'a body',
-        date: '1/1/2023',
+        date: new Date('2023-01-01'),
         owner: 'user-123',
       });
     });
@@ -100,14 +100,13 @@ describe('ThreadRepositoryPostgres', () => {
 
       // Action
       const thread = await threadRepositoryPostgres.getThreadDetail('thread-123');
-      expect(thread).toBeInstanceOf(ThreadDetail);
-      expect(thread).toEqual({
+      expect(thread).toStrictEqual(new ThreadDetail({
         id: 'thread-123',
         title: 'a title',
         body: 'a body',
-        date: '1/1/2023',
+        date: new Date('2023-01-01').toISOString(),
         username: 'userA',
-      });
+      }));
     });
   });
 });

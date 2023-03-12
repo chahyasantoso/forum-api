@@ -28,7 +28,7 @@ describe('a Thread entities', () => {
       id: 'thread-123',
       title: 'abcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghij',
       body: 'a body',
-      date: '1/1/2023',
+      date: '2023-01-01T00:00:00.000Z',
       username: 'user-123',
     };
 
@@ -40,7 +40,7 @@ describe('a Thread entities', () => {
       id: 'thread-123',
       title: 'a title',
       body: 'a body',
-      date: '1/1/2023',
+      date: '2023-01-01T00:00:00.000Z',
       username: 'user-123',
     };
 

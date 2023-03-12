@@ -22,13 +22,13 @@ describe('ReplyRepositoryPostgres', () => {
       id: 'thread-123',
       title: 'a title',
       body: 'a body',
-      date: '1/1/2023',
+      date: new Date('2023-01-01'),
       owner: 'user-123',
     });
     await CommentsTableTestHelper.addComment({
       id: 'comment-123',
       content: 'a comment',
-      date: '1/1/2023',
+      date: new Date('2023-01-01'),
       threadId: 'thread-123',
       owner: 'user-123',
       isDelete: false,
@@ -89,7 +89,7 @@ describe('ReplyRepositoryPostgres', () => {
       await CommentsTableTestHelper.addReply({
         id: 'reply-123',
         content: 'a reply',
-        date: '1/1/2023',
+        date: new Date('2023-01-01'),
         threadId: 'thread-123',
         owner: 'user-123',
         commentId: 'comment-123',
@@ -164,7 +164,7 @@ describe('ReplyRepositoryPostgres', () => {
       await CommentsTableTestHelper.addReply({
         id: 'reply-456',
         content: 'a reply',
-        date: '1/2/2023',
+        date: new Date('2023-02-01'),
         threadId: 'thread-123',
         owner: 'user-123',
         commentId: 'comment-123',
@@ -180,20 +180,22 @@ describe('ReplyRepositoryPostgres', () => {
 
       // Assert
       expect(replies).toHaveLength(2);
-      expect(replies[0]).toBeInstanceOf(ReplyDetail);
-      expect(replies[0]).toEqual({
+      expect(replies[0]).toStrictEqual(new ReplyDetail({
         id: 'reply-123',
         content: 'a reply',
-        date: '1/1/2023',
+        date: new Date('2023-01-01').toISOString(),
         username: 'userA',
-      });
-      expect(replies[1]).toBeInstanceOf(ReplyDetail);
-      expect(replies[1]).toEqual({
+        isDelete: false,
+      }));
+
+      expect(replies[1]).toStrictEqual(new ReplyDetail({
         id: 'reply-456',
         content: 'a reply',
-        date: '1/2/2023',
+        date: new Date('2023-02-01').toISOString(),
         username: 'userA',
-      });
+        isDelete: false,
+      }));
+
       expect(new Date(replies[0].date).getTime())
         .toBeLessThan(new Date(replies[1].date).getTime());
     });

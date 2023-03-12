@@ -11,6 +11,16 @@ class GetThreadUseCase {
     const { threadId } = useCasePayload;
     const threadDetail = await this._threadRepository.getThreadDetail(threadId);
 
+    /* commentsAndReplies adalah object yang memiliki property semua id dari comment dan replies
+      contoh: commentAndReplies {
+        'comment-123': object CommentDetail untuk id comment-123
+        'reply-123': object ReplyDetail untuk id reply-123
+      }
+      iterate keysnya untuk cari parent kemudian push repliesnya
+    */
+    // const commentsAndReplies = await this._commentRepository.getCommentsAndReplies(threadId);
+    // const commentsWithReplies = commentsAndReplies.getHierarchyArray();
+
     const comments = await this._commentRepository.getComments(threadId);
     await Promise.all(comments.map(async (comment, index) => {
       comments[index].replies = await this._replyRepository.getReplies(comment.id);
