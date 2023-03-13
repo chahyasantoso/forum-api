@@ -51,7 +51,7 @@ describe('a Thread entities', () => {
     expect(id).toEqual(payload.id);
     expect(title).toEqual(payload.title);
     expect(body).toEqual(payload.body);
-    expect(date).toEqual(payload.date.toISOString());
+    expect(date).toEqual(payload.date);
     expect(username).toEqual(payload.username);
   });
 });

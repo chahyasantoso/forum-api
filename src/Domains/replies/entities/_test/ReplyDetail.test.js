@@ -39,7 +39,7 @@ describe('a ReplyDetail entities', () => {
 
     expect(id).toEqual(payload.id);
     expect(username).toEqual(payload.username);
-    expect(date).toEqual(payload.date.toISOString());
+    expect(date).toEqual(payload.date);
     expect(content).toEqual(payload.content);
     expect(replyOfId).toEqual(payload.replyOfId);
   });
@@ -60,7 +60,7 @@ describe('a ReplyDetail entities', () => {
 
     expect(id).toEqual(payload.id);
     expect(username).toEqual(payload.username);
-    expect(date).toEqual(payload.date.toISOString());
+    expect(date).toEqual(payload.date);
     expect(content).toEqual('**balasan telah dihapus**');
     expect(replyOfId).toEqual(payload.replyOfId);
   });

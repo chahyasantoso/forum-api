@@ -9,7 +9,7 @@ class CommentDetail {
 
     this.id = id;
     this.username = username;
-    this.date = date.toISOString();
+    this.date = date;
     this.content = isDelete ? '**komentar telah dihapus**' : content;
   }
 

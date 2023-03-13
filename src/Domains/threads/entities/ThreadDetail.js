@@ -8,7 +8,7 @@ class ThreadDetail {
     this.id = id;
     this.title = title;
     this.body = body;
-    this.date = date.toISOString();
+    this.date = date;
     this.username = username;
   }
 

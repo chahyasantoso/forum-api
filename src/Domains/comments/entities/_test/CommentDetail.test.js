@@ -37,7 +37,7 @@ describe('a CommentDetail entities', () => {
 
     expect(id).toEqual(payload.id);
     expect(username).toEqual(payload.username);
-    expect(date).toEqual(payload.date.toISOString());
+    expect(date).toEqual(payload.date);
     expect(content).toEqual(payload.content);
   });
 
@@ -56,7 +56,7 @@ describe('a CommentDetail entities', () => {
 
     expect(id).toEqual(payload.id);
     expect(username).toEqual(payload.username);
-    expect(date).toEqual(payload.date.toISOString());
+    expect(date).toEqual(payload.date);
     expect(content).toEqual('**komentar telah dihapus**');
   });
 });

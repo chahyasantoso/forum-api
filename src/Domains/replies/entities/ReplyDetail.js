@@ -8,7 +8,7 @@ class ReplyDetail {
 
     this.id = id;
     this.username = username;
-    this.date = date.toISOString();
+    this.date = date;
     this.content = isDelete ? '**balasan telah dihapus**' : content;
     this.replyOfId = replyOfId;
   }

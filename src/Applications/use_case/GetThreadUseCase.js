@@ -17,7 +17,7 @@ class GetThreadUseCase {
     const all = new Map([...commentsMap, ...repliesMap]);
     all.forEach((detail) => {
       const { replyOfId } = detail;
-      if (replyOfId) {
+      if (replyOfId && all.has(replyOfId)) {
         const parent = all.get(replyOfId);
         parent.replies ||= [];
         parent.replies.push(detail);
