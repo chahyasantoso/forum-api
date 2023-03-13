@@ -19,7 +19,7 @@ class GetThreadUseCase {
       const { replyOfId } = detail;
       if (replyOfId && all.has(replyOfId)) {
         const parent = all.get(replyOfId);
-        parent.replies ||= [];
+        parent.replies = parent.replies || [];
         parent.replies.push(detail);
         // eslint-disable-next-line no-param-reassign
         delete detail.replyOfId;
