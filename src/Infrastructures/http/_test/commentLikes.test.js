@@ -67,7 +67,7 @@ describe('/threads endpoint', () => {
 
       // Action
       const response = await server.inject({
-        method: 'POST',
+        method: 'PUT',
         url: `/threads/${testData.threads[0].id}/comments/${testData.comments[0].id}/likes`,
         headers: {
           Authorization: `Bearer ${testData.tokens[1].accessToken}`,
