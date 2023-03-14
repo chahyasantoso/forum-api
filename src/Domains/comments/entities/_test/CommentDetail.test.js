@@ -34,13 +34,14 @@ describe('a CommentDetail entities', () => {
     };
 
     const {
-      id, username, date, content, likeCount,
+      id, username, date, content, replies, likeCount,
     } = new CommentDetail(payload);
 
     expect(id).toEqual(payload.id);
     expect(username).toEqual(payload.username);
     expect(date).toEqual(payload.date);
     expect(content).toEqual(payload.content);
+    expect(replies).toEqual([]);
     expect(likeCount).toEqual(payload.likeCount);
   });
 
@@ -55,13 +56,14 @@ describe('a CommentDetail entities', () => {
     };
 
     const {
-      id, username, date, content, likeCount,
+      id, username, date, content, replies, likeCount,
     } = new CommentDetail(payload);
 
     expect(id).toEqual(payload.id);
     expect(username).toEqual(payload.username);
     expect(date).toEqual(payload.date);
     expect(content).toEqual('**komentar telah dihapus**');
+    expect(replies).toEqual([]);
     expect(likeCount).toEqual(payload.likeCount);
   });
 });

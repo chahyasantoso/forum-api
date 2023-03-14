@@ -45,7 +45,7 @@ describe('a Thread entities', () => {
     };
 
     const {
-      id, title, body, date, username,
+      id, title, body, date, username, comments,
     } = new ThreadDetail(payload);
 
     expect(id).toEqual(payload.id);
@@ -53,5 +53,6 @@ describe('a Thread entities', () => {
     expect(body).toEqual(payload.body);
     expect(date).toEqual(payload.date);
     expect(username).toEqual(payload.username);
+    expect(comments).toEqual([]);
   });
 });
