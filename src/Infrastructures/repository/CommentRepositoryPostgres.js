@@ -73,23 +73,62 @@ class CommentRepositoryPostgres extends CommentRepository {
 
   async getComments(threadId) {
     const query = {
-      text: `SELECT comments.id, comments.content, comments.date, users.username, comments.is_delete 
+      text: `SELECT comments.id, comments.content, comments.date, comments.is_delete,
+      users.username, COUNT(comment_likes.comment_id)::int as like_count
       FROM comments
       LEFT JOIN users ON comments.owner = users.id
+      LEFT JOIN comment_likes ON comments.id = comment_likes.comment_id
       WHERE comments.thread_id = $1 AND comments.reply_of_id IS NULL
+      GROUP BY comments.id, users.username
       ORDER BY comments.date ASC`,
       values: [threadId],
     };
     const result = await this._pool.query(query);
 
     return new Map(result.rows.map(({
-      id, content, date, username, is_delete,
+      id, content, date, username, is_delete, like_count,
     }) => [
       id,
       new CommentDetail({
-        id, content, date, username, isDelete: is_delete,
+        id, content, date, username, isDelete: is_delete, likeCount: like_count,
       }),
     ]));
+  }
+
+  async hasExistingLike(commentLike) {
+    const { commentId, owner } = commentLike;
+    const query = {
+      text: `SELECT 1
+      FROM comment_likes
+      WHERE comment_id = $1 AND owner = $2`,
+      values: [commentId, owner],
+    };
+
+    const result = await this._pool.query(query);
+    return result.rows.length;
+  }
+
+  async deleteLike(commentLike) {
+    const { commentId, owner } = commentLike;
+    const query = {
+      text: `DELETE
+      FROM comment_likes
+      WHERE comment_id = $1 AND owner = $2`,
+      values: [commentId, owner],
+    };
+
+    await this._pool.query(query);
+  }
+
+  async addLike(commentLike) {
+    const { commentId, owner } = commentLike;
+    const query = {
+      text: `INSERT INTO comment_likes
+      VALUES($1, $2)`,
+      values: [commentId, owner],
+    };
+
+    await this._pool.query(query);
   }
 }
 

@@ -297,7 +297,7 @@ describe('/threads endpoint', () => {
   });
 
   describe('when GET /threads/{threadId}', () => {
-    it('should response 200 and returns thread detail', async () => {
+    it('should response 200 and returns thread detail with comments and replies', async () => {
       // Arrange
       const server = await createServer(container);
 

@@ -202,7 +202,27 @@ describe('/threads endpoint', () => {
       expect(responseJson.message).toEqual('Missing authentication');
     });
 
-    it('should response 404 when comment/thread not found', async () => {
+    it('should response 404 when thread not found', async () => {
+      // Arrange
+      const server = await createServer(container);
+
+      // Action
+      const response = await server.inject({
+        method: 'DELETE',
+        url: `/threads/xxx/comments/${testData.comments[0].id}`,
+        headers: {
+          Authorization: `Bearer ${testData.tokens[0].accessToken}`,
+        },
+      });
+
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(404);
+      expect(responseJson.status).toEqual('fail');
+      expect(responseJson.message).not.toEqual('');
+    });
+
+    it('should response 404 when comment not found', async () => {
       // Arrange
       const server = await createServer(container);
 

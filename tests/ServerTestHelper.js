@@ -66,6 +66,17 @@ const ServerTestHelper = {
     const { addedReply } = JSON.parse(response.payload).data;
     return addedReply;
   },
+
+  async like(threadId, commentId, accessToken) {
+    const server = await createServer(container);
+    await server.inject({
+      method: 'PUT',
+      url: `/threads/${threadId}/comments/${commentId}/likes`,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+  },
 };
 
 module.exports = ServerTestHelper;
