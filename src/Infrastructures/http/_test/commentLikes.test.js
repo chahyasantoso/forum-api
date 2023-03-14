@@ -152,22 +152,24 @@ describe('/threads endpoint', () => {
         const responseJson = JSON.parse(response.payload);
         expect(response.statusCode).toEqual(200);
         expect(responseJson.status).toEqual('success');
-        expect(responseJson.data.thread).toBeDefined();
-        expect(responseJson.data.thread.id).toEqual(testData.threads[0].id);
-        expect(responseJson.data.thread.title).toEqual(testData.threads[0].title);
-        expect(responseJson.data.thread.body).not.toEqual('');
-        expect(responseJson.data.thread.date).not.toEqual('');
-        expect(responseJson.data.thread.username).toEqual(testData.users[0].username);
-        expect(responseJson.data.thread.comments).toBeDefined();
+
+        expect(responseJson.data).toHaveProperty('thread');
+        expect(responseJson.data.thread).toHaveProperty('id', testData.threads[0].id);
+        expect(responseJson.data.thread).toHaveProperty('title', testData.threads[0].title);
+        expect(responseJson.data.thread).toHaveProperty('body', expect.any(String));
+        expect(responseJson.data.thread).toHaveProperty('date', expect.any(String));
+        expect(responseJson.data.thread).toHaveProperty('username', testData.users[0].username);
+        expect(responseJson.data.thread).toHaveProperty('comments');
+        expect(Array.isArray(responseJson.data.thread.comments)).toBe(true);
         expect(responseJson.data.thread.comments).toHaveLength(1);
 
         const [comment1] = responseJson.data.thread.comments;
-        expect(comment1.id).toEqual(testData.comments[0].id);
-        expect(comment1.content).toEqual(testData.comments[0].content);
-        expect(comment1.date).not.toEqual('');
-        expect(comment1.username).toEqual(testData.users[0].username);
-        expect(comment1.likeCount).toBeDefined();
-        expect(comment1.likeCount).toEqual(1);
+        expect(comment1).toHaveProperty('id', testData.comments[0].id);
+        expect(comment1).toHaveProperty('content', testData.comments[0].content);
+        expect(comment1).toHaveProperty('date', expect.any(String));
+        expect(comment1).toHaveProperty('username', testData.users[0].username);
+        expect(comment1).toHaveProperty('likeCount', 1);
+        expect(comment1).toHaveProperty('replies', []);
       });
     });
 
@@ -189,22 +191,24 @@ describe('/threads endpoint', () => {
         const responseJson = JSON.parse(response.payload);
         expect(response.statusCode).toEqual(200);
         expect(responseJson.status).toEqual('success');
-        expect(responseJson.data.thread).toBeDefined();
-        expect(responseJson.data.thread.id).toEqual(testData.threads[0].id);
-        expect(responseJson.data.thread.title).toEqual(testData.threads[0].title);
-        expect(responseJson.data.thread.body).not.toEqual('');
-        expect(responseJson.data.thread.date).not.toEqual('');
-        expect(responseJson.data.thread.username).toEqual(testData.users[0].username);
-        expect(responseJson.data.thread.comments).toBeDefined();
+
+        expect(responseJson.data).toHaveProperty('thread');
+        expect(responseJson.data.thread).toHaveProperty('id', testData.threads[0].id);
+        expect(responseJson.data.thread).toHaveProperty('title', testData.threads[0].title);
+        expect(responseJson.data.thread).toHaveProperty('body', expect.any(String));
+        expect(responseJson.data.thread).toHaveProperty('date', expect.any(String));
+        expect(responseJson.data.thread).toHaveProperty('username', testData.users[0].username);
+        expect(responseJson.data.thread).toHaveProperty('comments');
+        expect(Array.isArray(responseJson.data.thread.comments)).toBe(true);
         expect(responseJson.data.thread.comments).toHaveLength(1);
 
         const [comment1] = responseJson.data.thread.comments;
-        expect(comment1.id).toEqual(testData.comments[0].id);
-        expect(comment1.content).toEqual(testData.comments[0].content);
-        expect(comment1.date).not.toEqual('');
-        expect(comment1.username).toEqual(testData.users[0].username);
-        expect(comment1.likeCount).toBeDefined();
-        expect(comment1.likeCount).toEqual(0);
+        expect(comment1).toHaveProperty('id', testData.comments[0].id);
+        expect(comment1).toHaveProperty('content', testData.comments[0].content);
+        expect(comment1).toHaveProperty('date', expect.any(String));
+        expect(comment1).toHaveProperty('username', testData.users[0].username);
+        expect(comment1).toHaveProperty('likeCount', 0);
+        expect(comment1).toHaveProperty('replies', []);
       });
     });
   });
