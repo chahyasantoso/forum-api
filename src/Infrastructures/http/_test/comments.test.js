@@ -313,7 +313,8 @@ describe('/threads endpoint', () => {
       expect(responseJson.data.thread).toHaveProperty('body', expect.any(String));
       expect(responseJson.data.thread).toHaveProperty('date', expect.any(String));
       expect(responseJson.data.thread).toHaveProperty('username', testData.users[0].username);
-      expect(responseJson.data.thread).toHaveProperty('comments', expect.any(Array));
+      expect(responseJson.data.thread).toHaveProperty('comments');
+      expect(Array.isArray(responseJson.data.thread.comments)).toBe(true);
       expect(responseJson.data.thread.comments).toHaveLength(2);
 
       const [comment1, comment2] = responseJson.data.thread.comments;
