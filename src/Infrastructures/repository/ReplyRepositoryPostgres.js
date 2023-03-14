@@ -82,6 +82,7 @@ class ReplyRepositoryPostgres extends ReplyRepository {
       WHERE comments.reply_of_id = ANY($1::text[])
       ORDER BY comments.date ASC`,
       /*
+      // this is query for upcoming feature where a reply can also have a reply
       text: `WITH RECURSIVE replies AS (
         SELECT
         id, content, date, owner, is_delete, reply_of_id
@@ -103,7 +104,7 @@ class ReplyRepositoryPostgres extends ReplyRepository {
         LEFT JOIN users ON replies.owner = users.id
         WHERE replies.reply_of_id IS NOT NULL
         ORDER BY replies.date ASC`,
-        */
+      */
       values: [commentIds],
     };
     const result = await this._pool.query(query);

@@ -7,6 +7,7 @@ const container = require('../../container');
 const createServer = require('../createServer');
 
 const testData = {
+  users: [],
   tokens: [],
   threads: [],
   comments: [],
@@ -14,13 +15,13 @@ const testData = {
 
 describe('/threads endpoint', () => {
   beforeAll(async () => {
-    await ServerTestHelper.addUser({
+    testData.users[0] = await ServerTestHelper.addUser({
       username: 'userA',
       password: 'xxx',
       fullname: 'user A full name',
     });
 
-    await ServerTestHelper.addUser({
+    testData.users[1] = await ServerTestHelper.addUser({
       username: 'userB',
       password: 'xxx',
       fullname: 'user B full name',
@@ -75,7 +76,7 @@ describe('/threads endpoint', () => {
       expect(responseJson.message).toEqual('Missing authentication');
     });
 
-    it('should response 404 when thread not exists', async () => {
+    it('should response 404 when thread is not found', async () => {
       // Arrange
       const requestPayload = {
         content: 'a title',
@@ -168,8 +169,16 @@ describe('/threads endpoint', () => {
       const responseJson = JSON.parse(response.payload);
       expect(response.statusCode).toEqual(201);
       expect(responseJson.status).toEqual('success');
-      expect(responseJson.data).toBeDefined();
-      expect(responseJson.data.addedComment).toBeDefined();
+
+      expect(responseJson.data).toHaveProperty('addedComment');
+      expect(responseJson.data.addedComment).toHaveProperty('id', expect.any(String));
+      expect(responseJson.data.addedComment).toHaveProperty('content', requestPayload.content);
+      expect(responseJson.data.addedComment).toHaveProperty('owner', testData.users[0].id);
+
+      const rows = await CommentsTableTestHelper.findCommentById(responseJson.data.addedComment.id);
+      expect(rows).toHaveLength(1);
+
+      await CommentsTableTestHelper.cleanTable();
     });
   });
 
@@ -279,6 +288,49 @@ describe('/threads endpoint', () => {
       const responseJson = JSON.parse(response.payload);
       expect(response.statusCode).toEqual(200);
       expect(responseJson.status).toEqual('success');
+    });
+  });
+
+  describe('when GET /threads/{threadId} after comment deletion', () => {
+    it('should response 200 and returns thread detail with deleted comment', async () => {
+      // Arrange
+      const server = await createServer(container);
+
+      // Action
+      const response = await server.inject({
+        method: 'GET',
+        url: `/threads/${testData.threads[0].id}`,
+      });
+
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(200);
+      expect(responseJson.status).toEqual('success');
+
+      expect(responseJson.data).toHaveProperty('thread');
+      expect(responseJson.data.thread).toHaveProperty('id', testData.threads[0].id);
+      expect(responseJson.data.thread).toHaveProperty('title', testData.threads[0].title);
+      expect(responseJson.data.thread).toHaveProperty('body', expect.any(String));
+      expect(responseJson.data.thread).toHaveProperty('date', expect.any(String));
+      expect(responseJson.data.thread).toHaveProperty('username', testData.users[0].username);
+      expect(responseJson.data.thread).toHaveProperty('comments');
+      expect(Array.isArray(responseJson.data.thread.comments)).toBe(true);
+      expect(responseJson.data.thread.comments).toHaveLength(2);
+
+      const [comment1, comment2] = responseJson.data.thread.comments;
+      expect(comment1).toHaveProperty('id', testData.comments[0].id);
+      expect(comment1).toHaveProperty('content', '**komentar telah dihapus**');
+      expect(comment1).toHaveProperty('date', expect.any(String));
+      expect(comment1).toHaveProperty('username', testData.users[0].username);
+      expect(comment1).toHaveProperty('replies', []);
+      expect(comment1).toHaveProperty('likeCount', 0);
+
+      expect(comment2).toHaveProperty('id', testData.comments[1].id);
+      expect(comment2).toHaveProperty('content', testData.comments[1].content);
+      expect(comment2).toHaveProperty('date', expect.any(String));
+      expect(comment2).toHaveProperty('username', testData.users[1].username);
+      expect(comment2).toHaveProperty('replies', []);
+      expect(comment2).toHaveProperty('likeCount', 0);
     });
   });
 });

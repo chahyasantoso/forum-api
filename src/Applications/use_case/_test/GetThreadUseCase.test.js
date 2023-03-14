@@ -37,30 +37,34 @@ describe('GetThreadUseCase', () => {
       threadId: 'thread-123',
     };
 
-    const expectedThread = {
+    const expectedThread = new ThreadDetail({
       id: 'thread-123',
       title: 'a title',
       body: 'a body',
-      date: new Date('2023-01-01').toISOString(),
+      date: new Date('2023-01-01'),
       username: 'userA',
-      comments: [
-        {
-          id: 'comment-123',
-          username: 'userB',
-          date: new Date('2023-01-01').toISOString(),
-          content: 'a comment by userB',
-          likeCount: 0,
-          replies: [
-            {
-              id: 'reply-123',
-              username: 'userC',
-              date: new Date('2023-01-01').toISOString(),
-              content: 'a reply by userC',
-            },
-          ],
-        },
-      ],
-    };
+    });
+    expectedThread.comments = [
+      new CommentDetail({
+        id: 'comment-123',
+        username: 'userB',
+        date: new Date('2023-01-01'),
+        content: 'a comment by userB',
+        isDelete: false,
+        likeCount: 0,
+      }),
+    ];
+    expectedThread.comments[0].replies = [
+      new ReplyDetail({
+        id: 'reply-123',
+        username: 'userC',
+        date: new Date('2023-01-01'),
+        content: 'a reply by userC',
+        isDelete: false,
+        replyOfId: 'comment-123',
+      }),
+    ];
+    delete expectedThread.comments[0].replies[0].replyOfId;
 
     const mockReturnedThreadDetail = new ThreadDetail({
       id: 'thread-123',

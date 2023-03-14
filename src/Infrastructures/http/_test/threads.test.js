@@ -26,12 +26,12 @@ describe('/threads endpoint', () => {
   });
 
   afterAll(async () => {
+    await ThreadsTableTestHelper.cleanTable();
     await UsersTableTestHelper.cleanTable();
     await pool.end();
   });
 
   afterEach(async () => {
-    await ThreadsTableTestHelper.cleanTable();
   });
 
   describe('when POST /threads', () => {
@@ -157,18 +157,26 @@ describe('/threads endpoint', () => {
       const responseJson = JSON.parse(response.payload);
       expect(response.statusCode).toEqual(201);
       expect(responseJson.status).toEqual('success');
-      expect(responseJson.data.addedThread).toBeDefined();
+
+      expect(responseJson.data).toHaveProperty('addedThread');
+      expect(responseJson.data.addedThread).toHaveProperty('id', expect.any(String));
+      expect(responseJson.data.addedThread).toHaveProperty('title', requestPayload.title);
+      expect(responseJson.data.addedThread).toHaveProperty('owner', testData.user.id);
+
+      const rows = await ThreadsTableTestHelper.findThreadById(responseJson.data.addedThread.id);
+      expect(rows).toHaveLength(1);
     });
   });
 
   describe('when GET /threads/{threadId}', () => {
     it('should response 200 and returns thread detail', async () => {
       // Arrange
-      const threadPayload = {
+      const payload = {
         title: 'a thread title',
         body: 'a thread body',
       };
-      testData.thread = await ServerTestHelper.addThread(threadPayload, testData.token.accessToken);
+      testData.thread = await ServerTestHelper.addThread(payload, testData.token.accessToken);
+
       const server = await createServer(container);
 
       // Action
@@ -181,13 +189,14 @@ describe('/threads endpoint', () => {
       const responseJson = JSON.parse(response.payload);
       expect(response.statusCode).toEqual(200);
       expect(responseJson.status).toEqual('success');
-      expect(responseJson.data.thread).toBeDefined();
-      expect(responseJson.data.thread.id).not.toEqual('');
-      expect(responseJson.data.thread.title).toEqual(threadPayload.title);
-      expect(responseJson.data.thread.body).toEqual(threadPayload.body);
-      expect(responseJson.data.thread.date).not.toEqual('');
-      expect(responseJson.data.thread.username).toEqual(testData.user.username);
-      expect(responseJson.data.thread.comments).toEqual([]);
+
+      expect(responseJson.data).toHaveProperty('thread');
+      expect(responseJson.data.thread).toHaveProperty('id', testData.thread.id);
+      expect(responseJson.data.thread).toHaveProperty('title', payload.title);
+      expect(responseJson.data.thread).toHaveProperty('body', payload.body);
+      expect(responseJson.data.thread).toHaveProperty('date', expect.any(String));
+      expect(responseJson.data.thread).toHaveProperty('username', testData.user.username);
+      expect(responseJson.data.thread).toHaveProperty('comments', []);
     });
   });
 });
