@@ -26,12 +26,12 @@ describe('/threads endpoint', () => {
   });
 
   afterAll(async () => {
+    await ThreadsTableTestHelper.cleanTable();
     await UsersTableTestHelper.cleanTable();
     await pool.end();
   });
 
   afterEach(async () => {
-    await ThreadsTableTestHelper.cleanTable();
   });
 
   describe('when POST /threads', () => {
@@ -157,7 +157,21 @@ describe('/threads endpoint', () => {
       const responseJson = JSON.parse(response.payload);
       expect(response.statusCode).toEqual(201);
       expect(responseJson.status).toEqual('success');
+
       expect(responseJson.data.addedThread).toBeDefined();
+      expect(responseJson.data.addedThread).toHaveProperty('id');
+      expect(responseJson.data.addedThread).toHaveProperty('title');
+      expect(responseJson.data.addedThread).toHaveProperty('owner');
+
+      expect(typeof responseJson.data.addedThread.id).toBe('string');
+      expect(responseJson.data.addedThread.id).not.toEqual('');
+      expect(typeof responseJson.data.addedThread.title).toBe('string');
+      expect(responseJson.data.addedThread.title).not.toEqual('');
+      expect(typeof responseJson.data.addedThread.owner).toBe('string');
+      expect(responseJson.data.addedThread.owner).not.toEqual('');
+
+      const rows = await ThreadsTableTestHelper.findThreadById(responseJson.data.addedThread.id);
+      expect(rows).toHaveLength(1);
     });
   });
 
@@ -181,12 +195,26 @@ describe('/threads endpoint', () => {
       const responseJson = JSON.parse(response.payload);
       expect(response.statusCode).toEqual(200);
       expect(responseJson.status).toEqual('success');
+
       expect(responseJson.data.thread).toBeDefined();
+      expect(responseJson.data.thread).toHaveProperty('id');
+      expect(responseJson.data.thread).toHaveProperty('title');
+      expect(responseJson.data.thread).toHaveProperty('body');
+      expect(responseJson.data.thread).toHaveProperty('date');
+      expect(responseJson.data.thread).toHaveProperty('username');
+      expect(responseJson.data.thread).toHaveProperty('comments');
+
+      expect(typeof responseJson.data.thread.id).toBe('string');
       expect(responseJson.data.thread.id).not.toEqual('');
+      expect(typeof responseJson.data.thread.title).toBe('string');
       expect(responseJson.data.thread.title).toEqual(threadPayload.title);
+      expect(typeof responseJson.data.thread.body).toBe('string');
       expect(responseJson.data.thread.body).toEqual(threadPayload.body);
+      expect(typeof responseJson.data.thread.date).toBe('string');
       expect(responseJson.data.thread.date).not.toEqual('');
+      expect(typeof responseJson.data.thread.username).toBe('string');
       expect(responseJson.data.thread.username).toEqual(testData.user.username);
+      expect(Array.isArray(responseJson.data.thread.comments)).toBe(true);
       expect(responseJson.data.thread.comments).toEqual([]);
     });
   });
