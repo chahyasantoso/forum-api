@@ -28,7 +28,7 @@ class GetThreadUseCase {
     threadDetail.comments = Array.from(commentsMap)
       .map(([id, commentDetail]) => commentDetail); // eslint-disable-line no-unused-vars
 
-    return JSON.parse(JSON.stringify(threadDetail));
+    return threadDetail;
   }
 
   // eslint-disable-next-line class-methods-use-this
