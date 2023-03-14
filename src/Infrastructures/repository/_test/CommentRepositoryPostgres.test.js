@@ -174,6 +174,7 @@ describe('CommentRepositoryPostgres', () => {
         date: new Date('2023-01-01'),
         username: 'userA',
         isDelete: false,
+        likeCount: 0,
       }));
 
       const comment2 = commentsMap.get('comment-456');
@@ -183,6 +184,7 @@ describe('CommentRepositoryPostgres', () => {
         date: new Date('2023-02-01'),
         username: 'userA',
         isDelete: false,
+        likeCount: 0,
       }));
 
       expect(new Date(comment1.date).getTime())

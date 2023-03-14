@@ -49,6 +49,7 @@ describe('GetThreadUseCase', () => {
           username: 'userB',
           date: new Date('2023-01-01').toISOString(),
           content: 'a comment by userB',
+          likeCount: 0,
           replies: [
             {
               id: 'reply-123',
@@ -78,6 +79,7 @@ describe('GetThreadUseCase', () => {
           date: new Date('2023-01-01'),
           content: 'a comment by userB',
           isDelete: false,
+          likeCount: 0,
         }),
       ],
     ]);

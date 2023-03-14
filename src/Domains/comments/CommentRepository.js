@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars, class-methods-use-this */
 class CommentRepository {
-  async add(newComment) {
+  async add(addComment) {
     throw new Error('COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
 
@@ -17,6 +17,18 @@ class CommentRepository {
   }
 
   async getComments(threadId) {
+    throw new Error('COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
+  }
+
+  async hasExistingLike(commentLike) {
+    throw new Error('COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
+  }
+
+  async addLike(commentLike) {
+    throw new Error('COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
+  }
+
+  async deleteLike(commentLike) {
     throw new Error('COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
 }
