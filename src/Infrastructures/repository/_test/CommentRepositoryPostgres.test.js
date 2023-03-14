@@ -9,6 +9,8 @@ const CommentDetail = require('../../../Domains/comments/entities/CommentDetail'
 const CommentRepositoryPostgres = require('../CommentRepositoryPostgres');
 const NotFoundError = require('../../../Commons/exceptions/NotFoundError');
 const AuthorizationError = require('../../../Commons/exceptions/AuthorizationError');
+const CommentLike = require('../../../Domains/comments/entities/CommentLike');
+const CommentLikesTableTestHelper = require('../../../../tests/CommentLikesTableTestHelper');
 
 describe('CommentRepositoryPostgres', () => {
   beforeAll(async () => {
@@ -189,6 +191,61 @@ describe('CommentRepositoryPostgres', () => {
 
       expect(new Date(comment1.date).getTime())
         .toBeLessThan(new Date(comment2.date).getTime());
+    });
+  });
+
+  describe('addLike function', () => {
+    it('should persist new comment like', async () => {
+      // Arrange
+      const commentLike = new CommentLike({
+        commentId: 'comment-123',
+        owner: 'user-123',
+      });
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, () => {});
+
+      // Action
+      await commentRepositoryPostgres.addLike(commentLike);
+
+      // Assert
+      const row = await CommentLikesTableTestHelper
+        .findCommentLike(commentLike.commentId, commentLike.owner);
+      expect(row).toHaveLength(1);
+    });
+  });
+
+  describe('hasExistingLike function', () => {
+    it('should return if a comment has been liked by a user', async () => {
+      // Arrange
+      const commentLike = new CommentLike({
+        commentId: 'comment-123',
+        owner: 'user-123',
+      });
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, () => {});
+
+      // Action
+      const hasLike = await commentRepositoryPostgres.hasExistingLike(commentLike);
+
+      // Assert
+      expect(hasLike).toEqual(1);
+    });
+  });
+
+  describe('deleteLike function', () => {
+    it('should delete comment like', async () => {
+      // Arrange
+      const commentLike = new CommentLike({
+        commentId: 'comment-123',
+        owner: 'user-123',
+      });
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, () => {});
+
+      // Action
+      await commentRepositoryPostgres.deleteLike(commentLike);
+
+      // Assert
+      const row = await CommentLikesTableTestHelper
+        .findCommentLike(commentLike.commentId, commentLike.owner);
+      expect(row).toHaveLength(0);
     });
   });
 });
