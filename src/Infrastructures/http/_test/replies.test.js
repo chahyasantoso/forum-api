@@ -82,7 +82,7 @@ describe('/threads endpoint', () => {
       expect(responseJson.message).toEqual('Missing authentication');
     });
 
-    it('should response 404 when thread not exists', async () => {
+    it('should response 404 when thread is not found', async () => {
       // Arrange
       const requestPayload = {
         content: 'a reply',
@@ -107,7 +107,7 @@ describe('/threads endpoint', () => {
       expect(responseJson.message).not.toEqual('');
     });
 
-    it('should response 404 when comment not exists', async () => {
+    it('should response 404 when comment is not found', async () => {
       // Arrange
       const requestPayload = {
         content: 'a reply',
@@ -200,10 +200,16 @@ describe('/threads endpoint', () => {
       const responseJson = JSON.parse(response.payload);
       expect(response.statusCode).toEqual(201);
       expect(responseJson.status).toEqual('success');
-      expect(responseJson.data).toBeDefined();
-      expect(responseJson.data.addedReply).toBeDefined();
 
-      CommentsTableTestHelper.cleanReplies();
+      expect(responseJson.data).toHaveProperty('addedReply');
+      expect(responseJson.data.addedReply).toHaveProperty('id', expect.any(String));
+      expect(responseJson.data.addedReply).toHaveProperty('content', requestPayload.content);
+      expect(responseJson.data.addedReply).toHaveProperty('owner', testData.users[0].id);
+
+      const rows = await CommentsTableTestHelper.findReplyById(responseJson.data.addedReply.id);
+      expect(rows).toHaveLength(1);
+
+      await CommentsTableTestHelper.cleanReplies();
     });
   });
 
@@ -296,8 +302,8 @@ describe('/threads endpoint', () => {
     });
   });
 
-  describe('when GET /threads/{threadId}', () => {
-    it('should response 200 and returns thread detail with comments and replies', async () => {
+  describe('when GET /threads/{threadId} after reply deletion', () => {
+    it('should response 200 and returns thread detail with comments and deleted replies', async () => {
       // Arrange
       const server = await createServer(container);
 
@@ -311,33 +317,37 @@ describe('/threads endpoint', () => {
       const responseJson = JSON.parse(response.payload);
       expect(response.statusCode).toEqual(200);
       expect(responseJson.status).toEqual('success');
-      expect(responseJson.data.thread).toBeDefined();
-      expect(responseJson.data.thread.id).toEqual(testData.threads[0].id);
-      expect(responseJson.data.thread.title).toEqual(testData.threads[0].title);
-      expect(responseJson.data.thread.body).not.toEqual('');
-      expect(responseJson.data.thread.date).not.toEqual('');
-      expect(responseJson.data.thread.username).toEqual(testData.users[0].username);
-      expect(responseJson.data.thread.comments).toBeDefined();
+
+      expect(responseJson.data).toHaveProperty('thread');
+      expect(responseJson.data.thread).toHaveProperty('id', testData.threads[0].id);
+      expect(responseJson.data.thread).toHaveProperty('title', testData.threads[0].title);
+      expect(responseJson.data.thread).toHaveProperty('body', expect.any(String));
+      expect(responseJson.data.thread).toHaveProperty('date', expect.any(String));
+      expect(responseJson.data.thread).toHaveProperty('username', testData.users[0].username);
+      expect(responseJson.data.thread).toHaveProperty('comments');
+      expect(Array.isArray(responseJson.data.thread.comments)).toBe(true);
       expect(responseJson.data.thread.comments).toHaveLength(1);
 
       const [comment] = responseJson.data.thread.comments;
-      expect(comment.id).toEqual(testData.comments[0].id);
-      expect(comment.content).toEqual(testData.comments[0].content);
-      expect(comment.date).not.toEqual('');
-      expect(comment.username).toEqual(testData.users[0].username);
-      expect(comment.replies).toBeDefined();
+      expect(comment).toHaveProperty('id', testData.comments[0].id);
+      expect(comment).toHaveProperty('content', testData.comments[0].content);
+      expect(comment).toHaveProperty('date', expect.any(String));
+      expect(comment).toHaveProperty('username', testData.users[0].username);
+      expect(comment).toHaveProperty('likeCount', 0);
+      expect(comment).toHaveProperty('replies');
+      expect(Array.isArray(comment.replies)).toBe(true);
       expect(comment.replies).toHaveLength(2);
 
       const [reply1, reply2] = comment.replies;
-      expect(reply1.id).toEqual(testData.replies[0].id);
-      expect(reply1.content).toEqual('**balasan telah dihapus**');
-      expect(reply1.date).not.toEqual('');
-      expect(reply1.username).toEqual(testData.users[0].username);
+      expect(reply1).toHaveProperty('id', testData.replies[0].id);
+      expect(reply1).toHaveProperty('content', '**balasan telah dihapus**');
+      expect(reply1).toHaveProperty('date', expect.any(String));
+      expect(reply1).toHaveProperty('username', testData.users[0].username);
 
-      expect(reply2.id).toEqual(testData.replies[1].id);
-      expect(reply2.content).toEqual(testData.replies[1].content);
-      expect(reply2.date).not.toEqual('');
-      expect(reply2.username).toEqual(testData.users[1].username);
+      expect(reply2).toHaveProperty('id', testData.replies[1].id);
+      expect(reply2).toHaveProperty('content', testData.replies[1].content);
+      expect(reply2).toHaveProperty('date', expect.any(String));
+      expect(reply2).toHaveProperty('username', testData.users[1].username);
     });
   });
 });
