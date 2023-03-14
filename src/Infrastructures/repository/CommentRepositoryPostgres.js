@@ -95,17 +95,15 @@ class CommentRepositoryPostgres extends CommentRepository {
     ]));
   }
 
-  async hasExistingLike(commentLike) {
+  async addLike(commentLike) {
     const { commentId, owner } = commentLike;
     const query = {
-      text: `SELECT 1
-      FROM comment_likes
-      WHERE comment_id = $1 AND owner = $2`,
+      text: `INSERT INTO comment_likes
+      VALUES($1, $2)`,
       values: [commentId, owner],
     };
 
-    const result = await this._pool.query(query);
-    return result.rows.length;
+    await this._pool.query(query);
   }
 
   async deleteLike(commentLike) {
@@ -120,15 +118,17 @@ class CommentRepositoryPostgres extends CommentRepository {
     await this._pool.query(query);
   }
 
-  async addLike(commentLike) {
+  async hasExistingLike(commentLike) {
     const { commentId, owner } = commentLike;
     const query = {
-      text: `INSERT INTO comment_likes
-      VALUES($1, $2)`,
+      text: `SELECT 1
+      FROM comment_likes
+      WHERE comment_id = $1 AND owner = $2`,
       values: [commentId, owner],
     };
 
-    await this._pool.query(query);
+    const result = await this._pool.query(query);
+    return result.rows.length;
   }
 }
 
