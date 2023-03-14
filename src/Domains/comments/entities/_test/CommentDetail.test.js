@@ -17,6 +17,7 @@ describe('a CommentDetail entities', () => {
       date: '2023-01-01T00:00:00.000Z',
       content: true,
       isDelete: 'false',
+      likeCount: '0',
     };
 
     expect(() => new CommentDetail(payload)).toThrowError('COMMENT_DETAIL.NOT_MEET_DATA_TYPE_SPECIFICATION');
@@ -29,16 +30,18 @@ describe('a CommentDetail entities', () => {
       date: new Date('2023-01-01'),
       content: 'a content',
       isDelete: false,
+      likeCount: 0,
     };
 
     const {
-      id, username, date, content,
+      id, username, date, content, likeCount,
     } = new CommentDetail(payload);
 
     expect(id).toEqual(payload.id);
     expect(username).toEqual(payload.username);
     expect(date).toEqual(payload.date);
     expect(content).toEqual(payload.content);
+    expect(likeCount).toEqual(payload.likeCount);
   });
 
   it('should create commentDetail object with content set to **komentar telah dihapus** when isDelete is true', () => {
@@ -48,15 +51,17 @@ describe('a CommentDetail entities', () => {
       date: new Date('2023-01-01'),
       content: 'a content',
       isDelete: true,
+      likeCount: 0,
     };
 
     const {
-      id, username, date, content,
+      id, username, date, content, likeCount,
     } = new CommentDetail(payload);
 
     expect(id).toEqual(payload.id);
     expect(username).toEqual(payload.username);
     expect(date).toEqual(payload.date);
     expect(content).toEqual('**komentar telah dihapus**');
+    expect(likeCount).toEqual(payload.likeCount);
   });
 });

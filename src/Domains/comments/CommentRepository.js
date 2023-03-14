@@ -31,10 +31,6 @@ class CommentRepository {
   async deleteLike(commentLike) {
     throw new Error('COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
-
-  async getLikeCount(commentId) {
-    throw new Error('COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
-  }
 }
 
 module.exports = CommentRepository;

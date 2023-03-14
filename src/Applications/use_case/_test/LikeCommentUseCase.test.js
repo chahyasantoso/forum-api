@@ -40,7 +40,7 @@ describe('LikeCommentUseCase', () => {
     const mockCommentRepository = new CommentRepository();
 
     mockCommentRepository.verifyExisting = jest.fn(() => Promise.resolve());
-    mockCommentRepository.hasExistingLike = jest.fn(() => Promise.resolve(false));
+    mockCommentRepository.hasExistingLike = jest.fn(() => Promise.resolve(0));
     mockCommentRepository.addLike = jest.fn(() => Promise.resolve());
 
     const likeCommentUseCase = new LikeCommentUseCase({
@@ -79,7 +79,7 @@ describe('LikeCommentUseCase', () => {
     const mockCommentRepository = new CommentRepository();
 
     mockCommentRepository.verifyExisting = jest.fn(() => Promise.resolve());
-    mockCommentRepository.hasExistingLike = jest.fn(() => Promise.resolve(true));
+    mockCommentRepository.hasExistingLike = jest.fn(() => Promise.resolve(1));
     mockCommentRepository.deleteLike = jest.fn(() => Promise.resolve());
 
     const likeCommentUseCase = new LikeCommentUseCase({

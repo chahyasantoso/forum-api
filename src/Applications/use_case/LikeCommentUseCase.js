@@ -12,10 +12,11 @@ class LikeCommentUseCase {
     await this._commentRepository.verifyExisting(commentId, threadId);
 
     const commentLike = new CommentLike({ commentId, owner });
-    if (await this._commentRepository.hasExistingLike(commentLike)) {
-      await this._commentRepository.deleteLike(commentLike);
-    } else {
+    const hasLike = await this._commentRepository.hasExistingLike(commentLike);
+    if (!hasLike) {
       await this._commentRepository.addLike(commentLike);
+    } else {
+      await this._commentRepository.deleteLike(commentLike);
     }
   }
 
