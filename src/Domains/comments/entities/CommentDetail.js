@@ -11,6 +11,7 @@ class CommentDetail {
     this.username = username;
     this.date = date;
     this.content = isDelete ? '**komentar telah dihapus**' : content;
+    this.replies = [];
     this.likeCount = likeCount;
   }
 

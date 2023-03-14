@@ -10,6 +10,7 @@ class ThreadDetail {
     this.body = body;
     this.date = date;
     this.username = username;
+    this.comments = [];
   }
 
   /* eslint-disable class-methods-use-this */
